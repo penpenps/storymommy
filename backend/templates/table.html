@@ -1,0 +1,110 @@
+<!-- Template DataTables Card-->
+{% load get_at_index %}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> {{table.name}}</div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="{{table.id}}" width="100%" cellspacing="0">
+                <thead>
+                <tr>
+                    {% for th in table.header %}
+                    <th>{{th}}</th>
+                    {% endfor %}
+                    {% if table.edit or table.remove %}
+                    <th>操作</th>
+                    {% endif %}
+                </tr>
+                </thead>
+
+                <tbody>
+                    {% for row in table.body %}
+                    <tr key="{{row|get_at_index:table.key}}">
+                        {% for item in row %}
+                            {% if table.edit and forloop.counter0 in table.edit.items %}
+                                <td name="{{table.labels|get_at_index:forloop.counter0}}">{{ item }}</td>
+                            {% else %}
+                                <td>{{ item }}</td>
+                            {% endif %}
+                        {% endfor %}
+                        {% if table.edit or table.remove %}
+                            <td>
+                            {% if table.edit %}
+                            <a class="mr-3 d-inline-block table-edit-btn" style="cursor:pointer" data-toggle="modal" data-target="#{{table.label}}-edit-modal">
+                                <i class="fa fa-fw fa-pencil"></i></a>
+                            {% endif %}
+                            {% if table.remove %}
+                            <a class="mr-3 d-inline-block table-remove-btn" style="cursor:pointer" data-toggle="modal" data-target="#{{table.label}}-remove-modal">
+                                <i class="fa fa-fw fa-trash"></i></a>
+                            {% endif %}
+                            </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% if table.edit %}
+<div class="modal fade table-modal" id="{{table.label}}-edit-modal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">编辑</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{table.edit.link}}" method="post" class="edit-form">
+                    <fieldset>
+                    <div class="alert alert-danger error-box" role="alert" style="display: none">
+                        <span class="error-msg"></span>
+                    </div>
+                    {% for idx in table.edit.items %}
+                        <div class="form-group row">
+                            <label for="{{table.labels|get_at_index:idx}}" class="col-sm-2 col-form-label">{{table.header|get_at_index:idx}}</label>
+
+                            {% if idx in table.edit.enable %}
+                            <input class="form-control col-sm-10" id="{{table.labels|get_at_index:idx}}" type="text" name="{{table.labels|get_at_index:idx}}" placeholder="">
+                            {% else %}
+                            <input class="form-control col-sm-10" id="{{table.labels|get_at_index:idx}}" type="text" name="{{table.labels|get_at_index:idx}}" readonly placeholder="">
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    {% csrf_token %}
+                    <button type="submit" id="{{table.label}}-edit-btn" class="btn btn-primary btn-block submit-edit-btn">保存</button>
+                    </fieldset>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if table.remove %}
+<div class="modal fade" id="{{table.label}}-remove-modal" tabindex="-1" role="dialog" aria-labelledby="removeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removeModalLabel">确认删除</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">确定删除<span id="remove-modal-content" label="{{table.remove.label}}"></span>吗?</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+                {% csrf_token %}
+                <button class="btn btn-primary" id="remove-confirm-btn" link="{{table.remove.link}}">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+

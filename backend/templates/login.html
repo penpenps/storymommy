@@ -21,17 +21,17 @@
     <div class="card card-login mx-auto mt-5">
         <div class="card-header">故事妈妈管理平台</div>
         <div class="card-body">
-            <form action='/backend/auth' method="post" id="login-form">
+            <form action='/backend/' method="post" id="login-form">
                 <div id="sign-in-error-box" class="alert alert-danger" role="alert" style="display: none">
                     <span id="sign-in-error-msg"></span>
                 </div>
                 <div class="form-group">
                     <label for="username">用户名</label>
-                    <input class="form-control" id="username" type="text" placeholder="">
+                    <input class="form-control" id="username" type="text" name="username" placeholder="">
                 </div>
                 <div class="form-group">
                     <label for="password">密码</label>
-                    <input class="form-control" id="password" type="password" placeholder="">
+                    <input class="form-control" id="password" type="password" name="password" placeholder="">
                 </div>
                 <div class="form-group">
                     <div class="form-check">
@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 {% csrf_token %}
-                <button id="sign-in-button" class="btn btn-primary btn-block">登录</button>
+                <button id="sign-in-button" type="submit" class="btn btn-primary btn-block">登录</button>
             </form>
             <div class="text-center">
                 <a class="d-block small" href="#">忘记密码?</a>
@@ -53,6 +53,8 @@
 <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- Core plugin JavaScript-->
 <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="/static/js/common.js"></script>
+
 <script src="/static/js/login.js"></script>
 </body>
 

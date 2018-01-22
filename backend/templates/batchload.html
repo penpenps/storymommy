@@ -1,0 +1,40 @@
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#{{batchload.label}}-upload-modal"><i class="fa fa-fw fa-upload"></i>&nbsp;批量导入</button>
+<div class="modal fade upload-modal" id="{{batchload.label}}-upload-modal"  tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadModalLabel">上传文件</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form action="{{batchload.link}}" class="upload-modal-form" label="{{batchload.label}}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="file" class="form-control-file" required="True" id="uploadInputFile" name="uploadInputFile" aria-describedby="fileHelp">
+                        <small id="fileHelp" class="form-text text-warning">请务必按照文件模版填写后再上传,否则系统无法批量导入</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-info" href="/backend/download_admin_template" target="_blank">
+                        <i class="fa fa-fw fa-download"></i>&nbsp;下载文件模版</a>
+                    <button class="btn btn-primary" type="submit" >确定</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="{{batchload.label}}-upload-callback-modal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+                <div class="modal-body">
+                    <p id="{{batchload.label}}-upload-callback-msg" style="white-space: pre-line"></p>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-primary" onclick="window.location.reload()" value="确定" />
+                </div>
+        </div>
+    </div>
+</div>

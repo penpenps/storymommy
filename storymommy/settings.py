@@ -82,7 +82,7 @@ DATABASES = {
         'NAME': 'storymommy',
         'USER': 'storymommy',
         'PASSWORD': 'story1234mommy',
-        'HOST': '10.176.5.150',
+        'HOST': 'localhost',
         'PORT': '3306',
     }
 }
@@ -111,14 +111,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
 USE_I18N = True
 
 USE_L10N = True
+USE_TZ = False
 
-USE_TZ = True
+TIME_ZONE = 'Asia/Shanghai'
 
 
 # Static files (CSS, JavaScript, Images)

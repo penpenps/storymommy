@@ -40,3 +40,6 @@ build.log
 #SHITTY output not in target directory
 build.log
 .sqlite3
+.DS_Store
+.gitignore
+.log
