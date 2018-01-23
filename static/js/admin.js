@@ -3,27 +3,7 @@ $(document).ready(function(){
 
     load_admin_list();
 
-    $('#add-admin-form').submit(function (e) {
-        e.preventDefault();
-        $('#add-admin-error-box').hide();
-        if(!$(this).checkFormInputs(this)){
-            return;
-        }
-        var data = $(this).serializeFormJSON();
-//        console.log(data);
-        $.post('/backend/create_admin', data, function(res){
-            if(res['code'] == 0){
-                $('#admin-modal').modal('hide');
-                load_admin_list();
-            }
-            else{
-                $('#add-admin-error-box').show();
-                $('#add-admin-error-msg').text(res['msg']);
-                return;
-            }
-        });
-
-    });
+    add_form_event(load_admin_list);
 
 
 });

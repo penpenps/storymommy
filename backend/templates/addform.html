@@ -1,0 +1,31 @@
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#{{add.label}}-add-modal"><i class="fa fa-fw fa-plus"></i>&nbsp;{{add.name}}</button>
+
+<div class="modal fade" id="{{add.label}}-add-modal" tabindex="-1" role="dialog" aria-labelledby="{{add.label}}-add-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="{{add.label}}-add-lable">{{add.name}}</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{add.link}}" method="post" class="add-form" label="{{add.label}}">
+                    <div class="alert alert-danger error-box" role="alert" style="display: none">
+                        <span class="error-msg"></span>
+                    </div>
+                    {% for item in add.items %}
+                    <div class="form-group">
+                        <label for="{{item.label}}">{{item.name}}</label>
+                        <input class="form-control" id="{{item.label}}" type="{{item.type}}" name="{{item.label}}" placeholder="">
+                    </div>
+                    {% endfor %}
+                    {% csrf_token %}
+                    <button id="{{add.label}}-add-btn" type="submit" class="btn btn-primary btn-block">添加</button>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>

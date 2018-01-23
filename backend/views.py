@@ -22,7 +22,7 @@ from admin import is_username_valid, create_user, update_user, remove_user
 @login_required
 def index(request):
     data = {
-        "pageName": "首页"
+        "pageName": u"首页"
     }
     return render(request, 'index.html', data)
 
@@ -31,7 +31,34 @@ def index(request):
 @user_passes_test(lambda u: u.is_superuser, login_url="/backend/no_permission")
 def admin(request):
     data = {
-        "pageName": "管理员",
+        "pageName": u"管理员",
+        "add": {
+            "label": "admin",
+            "link": "/backend/create_admin",
+            "name": u"添加管理员",
+            "items": [
+                {
+                    "name": u"用户名",
+                    "label": "username",
+                    "type": "text"
+                },
+                {
+                    "name": u"姓名",
+                    "label": "name",
+                    "type": "text"
+                },
+                {
+                    "name": u"Email",
+                    "label": "email",
+                    "type": "email"
+                },
+                {
+                    "name": u"电话",
+                    "label": "phone",
+                    "type": "text"
+                }
+            ]
+        },
         "batchload":{
             "label": "admin",
             "link": "/backend/upload_batch_admin"

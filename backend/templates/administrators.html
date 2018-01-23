@@ -11,7 +11,7 @@
                 <h4>小组管理员</h4>
             </div>
             <div class="col-lg-6 col-md-6 float-right">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#admin-modal"><i class="fa fa-fw fa-plus"></i>&nbsp;添加管理员</button>
+                {% include 'addform.html' %}
                 &nbsp;&nbsp;
                 {% include 'batchload.html' %}
                 &nbsp;&nbsp;
@@ -24,46 +24,7 @@
     </div>
 
 
-<div class="modal fade" id="admin-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">添加管理员</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="#" method="post" id="add-admin-form">
-                    <div id="add-admin-error-box" class="alert alert-danger" role="alert" style="display: none">
-                        <span id="add-admin-error-msg"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="username">用户名</label>
-                        <input class="form-control" id="username" type="text" name="username" placeholder="">
-                    </div>
-                    <div class="form-group">
-                        <label for="name">姓名</label>
-                        <input class="form-control" id="name" type="text" name="name" placeholder="">
-                    </div>
-                    <div class="form-group">
-                        <label for="email">邮箱</label>
-                        <input class="form-control" id="email" type="email" name="email" placeholder="">
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">电话</label>
-                        <input class="form-control" id="phone" type="text" name="phone" placeholder="">
-                    </div>
 
-                    {% csrf_token %}
-                    <button id="add-admin-btn" type="submit" class="btn btn-primary btn-block">添加</button>
-                </form>
-
-            </div>
-
-        </div>
-    </div>
-</div>
 
 {% endblock %}
 
