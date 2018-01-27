@@ -15,9 +15,18 @@
                         <span class="error-msg"></span>
                     </div>
                     {% for item in add.items %}
+
                     <div class="form-group">
                         <label for="{{item.label}}">{{item.name}}</label>
+                        {% if item.type == 'select' %}
+                        <select class="form-control" id="{{item.label}}" name="{{item.label}}">
+                            {% for opt in item.options %}
+                            <option value="{{opt.value}}">{{opt.text}}</option>
+                            {% endfor %}
+                        </select>
+                        {% else %}
                         <input class="form-control" id="{{item.label}}" type="{{item.type}}" name="{{item.label}}" placeholder="">
+                        {% endif %}
                     </div>
                     {% endfor %}
                     {% csrf_token %}

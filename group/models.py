@@ -5,6 +5,7 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.db import transaction
 
 
 def get_superadmin():
@@ -17,14 +18,4 @@ class Group(models.Model):
     admin = models.ForeignKey(User, on_delete=models.SET(get_superadmin))
     create_time = models.DateTimeField(default=timezone.now)
 
-    def create_group(self, name, admin_username):
-        admin = User.objects.filter(username=admin_username)
-        if len(admin) == 0:
-            admin = get_superadmin()
-        else:
-            admin = admin[0]
-        self.create(name=name, admin=admin)
 
-    def check_name_exist(self, name):
-        res = self.objects.filter(name=name)
-        return len(res) > 0

@@ -7,9 +7,7 @@ $(document).ready(function() {
         $('#sign-in-error-box').hide();
         $( "#sign-in-button" ).prop( "disabled", true );
         $( "#sign-in-button" ).html("登录中……");
-        $.post('/backend/auth', {
-            $(this).serializeFormJSON()
-        }, function(message){
+        $.post('/backend/auth', $(this).serializeFormJSON(), function(message){
 
             if(message['code'] == 0){
                 window.location.href = "/backend/index/";

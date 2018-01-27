@@ -8,7 +8,7 @@ LOGGING = {
     },
     'handlers': {
         'default': {
-            'level': 'debug',
+            'level': 'DEBUG',
             'class': 'logging.StreamHandler',
         },
     },

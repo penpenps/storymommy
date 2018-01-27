@@ -21,6 +21,7 @@ from django.conf.urls import include, url
 
 urlpatterns = [
     url('backend/', include('backend.urls')),
+    url('group/', include('group.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^static/(?P<path>.*)$', serve, {
         'document_root': settings.STATIC_ROOT,

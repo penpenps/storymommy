@@ -1,6 +1,6 @@
 <!-- Template DataTables Card-->
 {% load get_at_index %}
-<div class="card mb-3">
+<div class="card mb-3" style="width:100%">
     <div class="card-header">
         <i class="fa fa-table"></i> {{table.name}}</div>
     <div class="card-body">
@@ -19,12 +19,12 @@
 
                 <tbody>
                     {% for row in table.body %}
-                    <tr key="{{row|get_at_index:table.key}}">
+                    <tr >
                         {% for item in row %}
-                            {% if table.edit and forloop.counter0 in table.edit.items %}
-                                <td name="{{table.labels|get_at_index:forloop.counter0}}">{{ item }}</td>
+                            {% if table.edit %}
+                                <td name="{{table.labels|get_at_index:forloop.counter0}}" value="{{item.value}}">{{ item.text }}</td>
                             {% else %}
-                                <td>{{ item }}</td>
+                                <td>{{ item.text }}</td>
                             {% endif %}
                         {% endfor %}
                         {% if table.edit or table.remove %}
@@ -34,7 +34,7 @@
                                 <i class="fa fa-fw fa-pencil"></i></a>
                             {% endif %}
                             {% if table.remove %}
-                            <a class="mr-3 d-inline-block table-remove-btn" style="cursor:pointer" data-toggle="modal" data-target="#{{table.label}}-remove-modal">
+                            <a class="mr-3 d-inline-block table-remove-btn" style="cursor:pointer" data-toggle="modal" data-target="#{{table.label}}-remove-modal" param="{{table.remove.param}}">
                                 <i class="fa fa-fw fa-trash"></i></a>
                             {% endif %}
                             </td>
@@ -63,15 +63,25 @@
                     <div class="alert alert-danger error-box" role="alert" style="display: none">
                         <span class="error-msg"></span>
                     </div>
-                    {% for idx in table.edit.items %}
-                        <div class="form-group row">
-                            <label for="{{table.labels|get_at_index:idx}}" class="col-sm-2 col-form-label">{{table.header|get_at_index:idx}}</label>
-
-                            {% if idx in table.edit.enable %}
-                            <input class="form-control col-sm-10" id="{{table.labels|get_at_index:idx}}" type="text" name="{{table.labels|get_at_index:idx}}" placeholder="">
+                    {% for item in table.edit.items %}
+                        <div class="form-group">
+                            {% if item.enable %}
+                                <label for="{{table.labels|get_at_index:item.index}}" class="col-form-label">{{table.header|get_at_index:item.index}}</label>
+                                {% if item.type == "select" %}
+                                    <select class="form-control" id="{{table.labels|get_at_index:item.index}}" name="{{table.labels|get_at_index:item.index}}">
+                                        {% for opt in item.options %}
+                                            <option value="{{opt.value}}">{{opt.text}}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% else%}
+                                    <input class="form-control" id="{{table.labels|get_at_index:item.index}}" type="text" name="{{table.labels|get_at_index:item.index}}" placeholder="">
+                                {% endif %}
                             {% else %}
-                            <input class="form-control col-sm-10" id="{{table.labels|get_at_index:idx}}" type="text" name="{{table.labels|get_at_index:idx}}" readonly placeholder="">
+                                <input class="form-control" id="{{table.labels|get_at_index:item.index}}" name="{{table.labels|get_at_index:item.index}}" type="hidden" placeholder="">
+
                             {% endif %}
+
+
                         </div>
                     {% endfor %}
 

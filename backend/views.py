@@ -73,7 +73,30 @@ def load_admin_list(request):
     users = User.objects.all()
     user_data = []
     for u in users:
-        item = [u.username, u.first_name, u.email, u.last_name, format_datetime_str(u.date_joined), format_datetime_str(u.last_login)]
+        item = [{
+            "value": u.username,
+            "text": u.username
+        },
+        {
+            "value": u.first_name,
+            "text": u.first_name
+        },
+        {
+            "value": u.email,
+            "text": u.email
+        },
+        {
+            "value": u.last_name,
+            "text": u.last_name
+        },
+        {
+            "value": format_datetime_str(u.date_joined),
+            "text": format_datetime_str(u.date_joined)
+        },
+        {
+            "value": format_datetime_str(u.last_login),
+            "text": format_datetime_str(u.last_login)
+        }]
         user_data.append(item)
 
     data = {
@@ -86,11 +109,32 @@ def load_admin_list(request):
             "key": 0,
             "edit": {
                 "link": "/backend/update_admin_info",
-                "items": [0, 1, 2, 3],
-                "enable": [1, 2, 3]
+                "items": [
+                    {
+                        "index": 0,
+                        "enable": False,
+                        "type": "text"
+                    },
+                    {
+                        "index": 1,
+                        "enable": True,
+                        "type": "text"
+                    },
+                    {
+                        "index": 2,
+                        "enable": True,
+                        "type": "email"
+                    },
+                    {
+                        "index": 3,
+                        "enable": True,
+                        "type": "text"
+                    }
+                ]
             },
             "remove": {
                 "link": "/backend/remove_admin/",
+                "param": "username",
                 "label": "name"
             },
             "body": user_data

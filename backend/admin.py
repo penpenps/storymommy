@@ -19,6 +19,7 @@ def remove_user(username):
     user = User.objects.get(username=username)
     user.delete()
 
+
 @transaction.atomic
 def update_user(username,  name, phone, email):
     user = User.objects.get(username=username)

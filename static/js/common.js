@@ -105,27 +105,30 @@ function load_table_content(load_url, table_panel_id, table_id){
             $(this).closest('tr').find('td').each(function(){
                 var attr = $(this).attr('name');
                 if(typeof attr !== typeof undefined && attr !== false){
-                    row_item[attr] = $(this).text();
+                    row_item[attr] = $(this).attr('value');
                 }
             });
             var form = $($(this).attr("data-target")).find('form');
-            form.find('input[type="text"]').each(function(){
-                $(this).val(row_item[$(this).attr('name')]);
+            form.find('input,select').each(function(){
+                if($(this).attr('name') in row_item){
+                    $(this).val(row_item[$(this).attr('name')]);
+                }
             });
         });
 
         $('.table-remove-btn').click(function(){
             var row_item = {};
+            var param = $(this).attr('param');
             $(this).closest('tr').find('td').each(function(){
                 var attr = $(this).attr('name');
                 if(typeof attr !== typeof undefined && attr !== false){
-                    row_item[attr] = $(this).text();
+                    row_item[attr] = $(this).attr('value');
                 }
             });
             var label = $('#remove-modal-content').attr('label');
             $('#remove-modal-content').text(row_item[label]);
 
-            $('#remove-confirm-btn').attr('key', $(this).closest('tr').attr('key'));
+            $('#remove-confirm-btn').attr('key', row_item[param]);
 
         });
 

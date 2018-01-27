@@ -64,11 +64,20 @@
                     <span class="nav-link-text">用户管理</span>
                 </a>
             </li>
+
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Administrators">
-                <a class="nav-link" href="{% url 'admin' %}">
+                <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#exampleAccordion">
                     <i class="fa fa-fw fa-sitemap"></i>
-                    <span class="nav-link-text">管理员</span>
+                    <span class="nav-link-text">系统管理</span>
                 </a>
+                <ul class="sidenav-second-level collapse" id="collapseComponents">
+                    <li>
+                        <a href="/backend/admin">小组管理员</a>
+                    </li>
+                    <li>
+                        <a href="/group">小组管理</a>
+                    </li>
+                </ul>
             </li>
 
         </ul>
