@@ -86,8 +86,8 @@ function add_form_event(callback){
                 callback();
             }
             else{
-                $(this).find('.error-box').show();
-                $(this).find('.error-msg').text(res['msg']);
+                $('#'+label+'-add-modal').find('.error-box').show();
+                $('#'+label+'-add-modal').find('.error-msg').text(res['msg']);
                 return;
             }
         });
@@ -151,13 +151,14 @@ function load_table_content(load_url, table_panel_id, table_id){
             e.preventDefault();
             $(this).find('.error-box').hide();
             var data = $(this).serializeFormJSON();
+            var label = $(this).attr('label');
             $.post($(this).attr('action'), data, function(res){
                 if(res['code'] == 0){
                     location.reload();
                 }
                 else{
-                    $(this).find('.error-box').show();
-                    $(this).find('.error-msg').text(res['msg']);
+                    $('#'+label+'-edit-modal').find('.error-box').show();
+                    $('#'+label+'-edit-modal').find('.error-msg').text(res['msg']);
                     return;
                 }
             });

@@ -61,3 +61,14 @@ def get_all_admin_as_options():
     for u in admins:
         options.append({'value': u.username, 'text': u.first_name})
     return options
+
+
+def get_all_group_as_options():
+    options = [{
+        "value": "-",
+        "text": u"未分组"
+    }]
+    groups = Group.objects.all()
+    for g in groups:
+        options.append({'value': g.id, 'text': g.name})
+    return options
