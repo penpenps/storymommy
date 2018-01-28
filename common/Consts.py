@@ -11,6 +11,7 @@ GROUP_EXISTED_MSG = u"小组名称已存在"
 NOT_FOUND_GROUP_MSG = u"小组不存在"
 NOT_FOUND_VOLUNTEER_MSG = u"该志愿者不存在"
 NO_PERMISSION_MSG = u"您没有权限进行该操作"
+NOT_FOUND_ACTIVITY_TYPE_MSG = u"活动类型不存在"
 UNKNOWN_ERROR = u"系统错误"
 
 

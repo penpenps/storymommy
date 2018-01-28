@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
+from volunteer.models import Volunteer
 from admin import get_all_groups, get_all_admin_as_options, create_group, check_name_exist, update_group_info as update_group, check_group_exist, remove_group as r_group
 from common.Utils import format_datetime_str
 from common.Result import Result
@@ -117,6 +118,8 @@ def load_group_list(request):
             "value": g.admin.username,
             "text": g.admin.first_name
         }, {
+            "text": Volunteer.objects.filter(group__id=g.id).count()
+        }, {
             "text": format_datetime_str(g.create_time)
         }
         ]
@@ -127,8 +130,8 @@ def load_group_list(request):
             "id": "groupTable",
             "name": u"小组列表",
             "label": "group",
-            "header": ["ID", u"小组名称", u"组长", u"创建时间"],
-            "labels": ["id", "name", "admin_username", "create_time"],
+            "header": ["ID", u"小组名称", u"组长", u"人数", u"创建时间"],
+            "labels": ["id", "name", "admin_username", "cnt", "create_time"],
             "edit": {
                 "link": "/group/update_group_info",
                 "items": [
@@ -167,11 +170,11 @@ def download_group_list(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="group_list_%s.csv"' % datetime.date.today().strftime("%Y_%m_%d")
     writer = csv.writer(response)
-    header = [u"小组名称", u"组长", u"创建时间"]
+    header = [u"小组名称", u"组长", u"人数", u"创建时间"]
     writer.writerow([unicode(s).encode("utf-8") for s in header])
     groups = Group.objects.all()
     for g in groups:
-        items = [g.name, g.admin.first_name, format_datetime_str(g.create_time)]
+        items = [g.name, g.admin.first_name, Volunteer.objects.filter(group__id=g.id).count(), format_datetime_str(g.create_time)]
         writer.writerow([unicode(s).encode("utf-8") for s in items])
 
     return response

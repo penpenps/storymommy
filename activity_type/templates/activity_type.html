@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block link %}
+<link href="/static/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+{% endblock %}
+{% block page %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-6 col-md-6">
+            <h4>{{pageName}}</h4>
+        </div>
+        <div class="col-lg-6 col-md-6 float-right">
+            {% include 'addform.html' %}
+            &nbsp;&nbsp;
+            <a target="_blank" class="btn btn-primary" href="{% url 'download_ctivity_type_list' %}"><i class="fa fa-fw fa-cloud-download"></i>&nbsp;导出列表</a>
+
+        </div>
+    </div>
+    <hr class="mt-2">
+    <div class="row" id="table-panel"></div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="/static/vendor/datatables/jquery.dataTables.js"></script>
+<script src="/static/vendor/datatables/dataTables.bootstrap4.js"></script>
+
+<script src="/static/js/activity_type.js"></script>
+{% endblock %}

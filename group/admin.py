@@ -63,12 +63,15 @@ def get_all_admin_as_options():
     return options
 
 
-def get_all_group_as_options():
+def get_all_group_as_options(user):
     options = [{
         "value": "-",
         "text": u"未分组"
     }]
-    groups = Group.objects.all()
+    if user.is_superuser:
+        groups = Group.objects.all()
+    else:
+        groups = Group.objects.filter(admin__username=user.username)
     for g in groups:
         options.append({'value': g.id, 'text': g.name})
     return options

@@ -135,7 +135,7 @@ def load_volunteer_list(request):
                         "index": 2,
                         "enable": True,
                         "type": "select",
-                        "options": get_all_group_as_options()
+                        "options": get_all_group_as_options(request.user)
                     },
                     {
                         "index": 3,
@@ -157,7 +157,7 @@ def load_volunteer_list(request):
             "remove": {
                 "link": "/volunteer/remove_volunteer/",
                 "label": "name",
-                "param": "id"
+                "param": "openid"
             },
             "body": volun_data
         }
@@ -177,7 +177,7 @@ def download_volunteer_list(request):
     else:
         volun_list = Volunteer.objects.filter(group__admin__username=request.user.username)
     for v in volun_list:
-        items = [v.name, v.group.name, v.phone, v.cert_number, v.year, v.group.admin.first_name, format_datetime_str(v.create_time)]
+        items = [v.name, v.group.name if v.group else u"未分组", v.phone, v.cert_number, v.year, v.creator.first_name, format_datetime_str(v.create_time)]
         writer.writerow([unicode(s).encode("utf-8") for s in items])
 
     return response
