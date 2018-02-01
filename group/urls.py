@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^add_group', views.add_group, name='add_group'),
     url(r'^update_group_info', views.update_group_info, name='update_group_info'),
     url(r'^download_group_list', views.download_group_list, name='download_group_list'),
+    url(r'^get_group_list', views.get_group_list, name='get_group_list'),
     url(r'^remove_group/(?P<_id>[\w\-]+)/', views.remove_group, name='remove_group'),
 
 ]

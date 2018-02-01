@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'backend',
     'group',
     'volunteer',
-    'activity_type'
+    'activity',
+    'activity_type',
+    'training'
 ]
 
 MIDDLEWARE = [

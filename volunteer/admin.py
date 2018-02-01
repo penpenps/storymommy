@@ -56,3 +56,9 @@ def check_has_modify_permission(username, openid):
     except:
         return False
     return False
+
+
+def get_volunteers_by_group(group_id=None):
+    if not group_id:
+        return Volunteer.objects.filter(group=None)
+    return Volunteer.objects.filter(group__id=group_id)

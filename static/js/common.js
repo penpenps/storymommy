@@ -27,7 +27,7 @@
         return true;
     };
 
-    $('input[type="text"], input[type="email"]').focusout(function(){
+    $('input[type="text"], input[type="email"], input[type="number"]').focusout(function(){
         $(this).checkInput(this);
     });
     $.fn.checkFormInputs = function(form){
@@ -68,6 +68,7 @@
           });
       });
 
+    $(".form_datetime").datetimepicker({format: 'yyyy/mm/dd hh:ii'});
 
 })(jQuery);
 
@@ -99,6 +100,8 @@ function load_table_content(load_url, table_panel_id, table_id){
     $.get(load_url, {}, function(tableHtml){
         $(table_panel_id).html(tableHtml);
         $(table_id).DataTable();
+
+        $(".form_datetime").datetimepicker({format: 'yyyy/mm/dd hh:ii'});
 
         $('.table-edit-btn').click(function(){
             var row_item = {};
@@ -150,6 +153,9 @@ function load_table_content(load_url, table_panel_id, table_id){
         $('.edit-form').submit(function (e) {
             e.preventDefault();
             $(this).find('.error-box').hide();
+            if(!$(this).checkFormInputs(this)){
+                return;
+            }
             var data = $(this).serializeFormJSON();
             var label = $(this).attr('label');
             $.post($(this).attr('action'), data, function(res){

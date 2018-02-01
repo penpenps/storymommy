@@ -12,6 +12,7 @@
     <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom fonts for this template-->
     <link href="/static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/static/vendor/datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
     <!-- Custom styles for this template-->
     <link href="/static/css/sb-admin.min.css" rel="stylesheet">
     {% block link %}
@@ -41,7 +42,7 @@
                 </a>
             </li>
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Activity Management">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="/activity">
                     <i class="fa fa-fw fa-child"></i>
                     <span class="nav-link-text">活动管理</span>
                 </a>
@@ -124,9 +125,11 @@
     <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- Core plugin JavaScript-->
     <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="/static/vendor/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
     <!-- Custom scripts for all pages-->
     <script src="/static/js/common.js"></script>
     <script src="/static/js/sb-admin.min.js"></script>
+
     {% block script %}
 
     {% endblock %}

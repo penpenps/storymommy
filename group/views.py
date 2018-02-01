@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from volunteer.models import Volunteer
-from admin import get_all_groups, get_all_admin_as_options, create_group, check_name_exist, update_group_info as update_group, check_group_exist, remove_group as r_group
+from admin import get_all_groups, get_all_admin_as_options, create_group, check_name_exist, update_group_info as update_group, check_group_exist, remove_group as r_group, get_all_group_as_options
 from common.Utils import format_datetime_str
 from common.Result import Result
 from common import Consts
@@ -101,6 +101,11 @@ def remove_group(request, _id):
             result.code = Consts.FAILED_CODE
             result.msg = Consts.UNKNOWN_ERROR
     return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")
+
+
+@login_required
+def get_group_list(request):
+    return HttpResponse(json.dumps(get_all_group_as_options(request.user)), content_type="application/json")
 
 
 @login_required

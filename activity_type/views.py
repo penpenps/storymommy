@@ -3,13 +3,11 @@ from __future__ import unicode_literals
 
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from group.admin import get_all_group_as_options, check_group_exist
-from volunteer.models import Volunteer
 from common.Utils import format_datetime_str
 from common.Result import Result
 from common import Consts
-from models import Group
 import admin
 import json
 import csv

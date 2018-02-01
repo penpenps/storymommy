@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block link %}
+<link href="/static/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+<link href="/static/vendor/boostrap.multiselect/css/bootstrap-multiselect.css" rel="stylesheet">
+{% endblock %}
+{% block page %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-6 col-md-6">
+            <h4>{{activity.name}}</h4>
+        </div>
+        <div class="col-lg-6 col-md-6 float-right">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#activity-register-modal"><i class="fa fa-fw fa-plus"></i>&nbsp;注册活动</button>
+
+            &nbsp;&nbsp;
+            <a target="_blank" class="btn btn-primary" href="/activity/download_activity_register_list/{{activity.id}}"><i class="fa fa-fw fa-cloud-download"></i>&nbsp;导出列表</a>
+
+        </div>
+    </div>
+    <hr class="mt-2">
+    <div class="row card mb-3" style="width:100%">
+        <div class="card-header">
+            <i class="fa fa-info-circle"></i> 活动信息</div>
+        <div class="card-body">
+            <p>时间: {{activity.get_start_time}} - {{activity.get_end_time}}</p>
+            <p>地点: {{activity.address}}</p>
+            <p>状态: {{activity.get_status}}</p>
+            <p>{{activity.creator.first_name}} {{activity.get_create_time}} 创建</p>
+        </div>
+    </div>
+    <div class="row" id="table-panel" activity_id="{{activity.id}}"></div>
+    <div class="modal fade" id="activity-register-modal" tabindex="-1" role="dialog" aria-labelledby="activity-register-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="activity-register-lable">注册{{activity.name}}</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/activity/register/" method="post" id="activity-register-form" label="activity-register">
+                        <div class="alert alert-danger error-box" role="alert" style="display: none">
+                            <span class="error-msg"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="group-select">所属小组</label>
+                            <select id="group-select" class="form-control" multiple="multiple">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="volunteer-select">选择需注册的志愿者</label>
+                            <select id="volunteer-select" class="form-control" multiple="multiple">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" name="register-type" id="single-register" value="single" checked="">
+                                    单独活动
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" name="register-type" id="training-register" value="training">
+                                    培训活动
+                                </label>
+                            </div>
+                        </div>
+
+                        {% csrf_token %}
+                        <button id="activity-register-btn" type="submit" class="btn btn-primary btn-block">注册</button>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="activity-register-result-modal" tabindex="-1" role="dialog" aria-labelledby="activity-register-result-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="activity-register-result-lable">注册结果</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-success" id="success-info"></p>
+                    <p class="text-danger" id="error-info"></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onClick="window.location.reload()" >确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="/static/vendor/datatables/jquery.dataTables.js"></script>
+<script src="/static/vendor/datatables/dataTables.bootstrap4.js"></script>
+<script src="/static/vendor/boostrap.multiselect/js/bootstrap-multiselect.js"></script>
+
+<script src="/static/js/activity_register.js"></script>
+{% endblock %}

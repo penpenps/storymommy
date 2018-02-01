@@ -29,6 +29,12 @@
                         {% endfor %}
                         {% if table.edit or table.remove %}
                             <td>
+                                {% if table.view %}
+                                {% with row|get_at_index:table.view.index as item %}
+                                <a class="mr-3 d-inline-block table-edit-btn" target="_blank" href="{{table.view.link}}{{ item.value }}">
+                                    <i class="fa fa-fw fa-eye"></i></a>
+                                {% endwith %}
+                                {% endif %}
                             {% if table.edit %}
                             <a class="mr-3 d-inline-block table-edit-btn" style="cursor:pointer" data-toggle="modal" data-target="#{{table.label}}-edit-modal">
                                 <i class="fa fa-fw fa-pencil"></i></a>
@@ -73,7 +79,10 @@
                                             <option value="{{opt.value}}">{{opt.text}}</option>
                                         {% endfor %}
                                     </select>
-                                {% else%}
+                            {% elif item.type == 'datetime' %}
+                            <input size="16" type="text" value="2018/01/01 09:00" id="{{table.labels|get_at_index:item.index}}" name="{{table.labels|get_at_index:item.index}}" readonly class="form-control form_datetime">
+
+                            {% else%}
                                     <input class="form-control" id="{{table.labels|get_at_index:item.index}}" type="text" name="{{table.labels|get_at_index:item.index}}" placeholder="">
                                 {% endif %}
                             {% else %}
@@ -107,7 +116,7 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div class="modal-body">确定删除<span id="remove-modal-content" label="{{table.remove.label}}"></span>吗?</div>
+            <div class="modal-body">确定删除"<span id="remove-modal-content" class="text-info" label="{{table.remove.label}}"></span>"吗?</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
                 {% csrf_token %}

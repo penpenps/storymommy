@@ -60,5 +60,17 @@ def check_modify_activity_type_permission(type_id, username):
 
 def get_privileged_types(user):
     if user.is_superuser:
-        return ActivityType.objects.all()
-    return ActivityType.objects.filter(Q(creator__username=user.username) | Q(group__admin__username=user.username) | Q(creator__is_superuser=True, is_private=False))
+        return ActivityType.objects.all().order_by('-create_time')
+    return ActivityType.objects.filter(Q(creator__username=user.username) | Q(group__admin__username=user.username) \
+                                       | Q(creator__is_superuser=True, is_private=False, group=None)).order_by('-create_time')
+
+
+def get_all_types_as_options(user):
+    at_list = get_privileged_types(user)
+    options = []
+    for at in at_list:
+        options.append({
+            "text": at.name,
+            "value": at.id
+        })
+    return options

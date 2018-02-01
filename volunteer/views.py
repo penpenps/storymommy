@@ -13,6 +13,7 @@ import admin
 import json
 import csv
 import datetime
+from collections import defaultdict
 
 
 @login_required
@@ -81,9 +82,9 @@ def remove_volunteer(request, openid):
 def load_volunteer_list(request):
     volun_data = []
     if request.user.is_superuser:
-        volun_list = Volunteer.objects.all()
+        volun_list = Volunteer.objects.all().order_by('-create_time')
     else:
-        volun_list = Volunteer.objects.filter(group__admin__username=request.user.username)
+        volun_list = Volunteer.objects.filter(group__admin__username=request.user.username).order_by('-create_time')
     for i, v in enumerate(volun_list):
         item = [{
             "value": v.openid,
@@ -181,3 +182,20 @@ def download_volunteer_list(request):
         writer.writerow([unicode(s).encode("utf-8") for s in items])
 
     return response
+
+
+@login_required
+def get_volunteer_list(request):
+    group_list = request.POST['group_list'].split(",")
+    username = request.user.username
+    res = defaultdict(list)
+    for group_id in group_list:
+        volun_list = admin.get_volunteers_by_group(group_id if group_id != '-' else None)
+        print volun_list
+        for v in volun_list:
+            if admin.check_has_modify_permission(username, v.openid):
+                res[group_id].append({
+                    "text": v.name,
+                    "value": str(v.openid)
+                })
+    return HttpResponse(json.dumps(res), content_type="application/json")

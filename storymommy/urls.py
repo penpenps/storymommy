@@ -24,6 +24,7 @@ urlpatterns = [
     url('group/', include('group.urls')),
     url('volunteer/', include('volunteer.urls')),
     url('activity_type/', include('activity_type.urls')),
+    url('activity/', include('activity.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^static/(?P<path>.*)$', serve, {
         'document_root': settings.STATIC_ROOT,

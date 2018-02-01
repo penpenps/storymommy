@@ -50,9 +50,9 @@ def remove_group(_id):
 
 def get_all_groups(admin_username=None):
     if admin_username:
-        return Group.objects.filter(admin__username=admin_username)
+        return Group.objects.filter(admin__username=admin_username).order_by('-create_time')
     else:
-        return Group.objects.all()
+        return Group.objects.all().order_by('-create_time')
 
 
 def get_all_admin_as_options():
@@ -73,5 +73,5 @@ def get_all_group_as_options(user):
     else:
         groups = Group.objects.filter(admin__username=user.username)
     for g in groups:
-        options.append({'value': g.id, 'text': g.name})
+        options.append({'value': str(g.id), 'text': g.name})
     return options
