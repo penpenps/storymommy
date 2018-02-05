@@ -11,7 +11,7 @@ from backend.admin import create_user
 from group.admin import create_group, update_group_info
 from volunteer.admin import create_volunteer
 from volunteer.models import Volunteer
-from admin import create_activity, update_activity, get_privileged_activities, register_activity, update_activity_register_status
+from admin import create_activity, update_activity, get_privileged_activities, register_activity, update_activity_register_status, get_volunteer_score
 from models import Activity, ActivityRegister
 from datetime import datetime, timedelta
 from common.Consts import DATETIME_FORMAT
@@ -108,11 +108,16 @@ class ActivityTestCase(TestCase):
         create_activity("activity1", at.id, s_t, e_t, "dongfang Rd.", "admin")
         activity = Activity.objects.get(name="activity1")
         register_activity(activity.id, "123456", "admin")
+
         ra = ActivityRegister.objects.get(activity__id=activity.id, volunteer__openid="123456")
+        self.assertEqual(get_volunteer_score("123456"), 0)
         self.assertEqual(ra.status, ActivityRegister.REGISTERED)
         update_activity_register_status(ra.id, ActivityRegister.SIGNED_UP)
         ra = ActivityRegister.objects.get(activity__id=activity.id, volunteer__openid="123456")
         self.assertEqual(ra.status, ActivityRegister.SIGNED_UP)
+        self.assertEqual(get_volunteer_score("123456"), 100)
+
         update_activity_register_status(ra.id, ActivityRegister.ABSENT)
         ra = ActivityRegister.objects.get(activity__id=activity.id, volunteer__openid="123456")
         self.assertEqual(ra.status, ActivityRegister.ABSENT)
+        self.assertEqual(get_volunteer_score("123456"), 0)

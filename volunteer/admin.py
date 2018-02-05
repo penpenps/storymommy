@@ -15,7 +15,7 @@ def check_volunteer_exist(openid):
     return len(res) > 0
 
 
-def create_volunteer(admin_username, openid, name, phone, cert_number='', year=0, group_id=None):
+def create_volunteer(admin_username, openid, name, phone, email, cert_number='', year=0, group_id=None):
     admin = User.objects.filter(username=admin_username)
     if len(admin) == 0:
         admin = get_superadmin()
@@ -26,15 +26,16 @@ def create_volunteer(admin_username, openid, name, phone, cert_number='', year=0
         groups = Group.objects.filter(id=group_id)
         if len(groups) > 0:
             group = groups[0]
-    Volunteer.objects.create(openid=openid, name=name, phone=phone, cert_number=cert_number, year=year, group=group, creator=admin)
+    Volunteer.objects.create(openid=openid, name=name, phone=phone, email=email, cert_number=cert_number, year=year, group=group, creator=admin)
 
 
 @transaction.atomic
-def update_volunteer_info(openid, name, phone, cert_number, year, group_id):
+def update_volunteer_info(openid, name, phone, email, cert_number, year, group_id):
     volunteer = Volunteer.objects.get(openid=openid)
     group = Group.objects.get(id=group_id) if group_id else None
     volunteer.name = name
     volunteer.phone = phone
+    volunteer.email = email
     volunteer.cert_number = cert_number
     volunteer.year = year
     volunteer.group = group

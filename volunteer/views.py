@@ -9,6 +9,7 @@ from common.Utils import format_datetime_str
 from common.Result import Result
 from common import Consts
 from group.admin import get_all_group_as_options, check_group_exist
+from activity.admin import get_volunteer_score
 import admin
 import json
 import csv
@@ -32,6 +33,7 @@ def update_volunteer_info(request):
     name = request.POST['name']
     group_id = request.POST['group_id']
     phone = request.POST['phone']
+    email = request.POST['email']
     cert_number = request.POST['cert_number']
     year = request.POST['year']
     if not admin.check_volunteer_exist(openid):
@@ -48,9 +50,9 @@ def update_volunteer_info(request):
         return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")
     try:
         if group_id == '-':
-            admin.update_volunteer_info(openid, name, phone, cert_number, year, None)
+            admin.update_volunteer_info(openid, name, phone, email, cert_number, year, None)
         else:
-            admin.update_volunteer_info(openid, name, phone, cert_number, year, group_id)
+            admin.update_volunteer_info(openid, name, phone, email, cert_number, year, group_id)
         result.code = Consts.SUCCESS_CODE
     except:
         result.code = Consts.FAILED_CODE
@@ -99,11 +101,16 @@ def load_volunteer_list(request):
             "value": v.phone,
             "text": v.phone
         }, {
+            "value": v.email,
+            "text": v.email
+        }, {
             "value": v.cert_number,
             "text": v.cert_number
         }, {
             "value": v.year,
             "text": v.year
+        }, {
+            "text": get_volunteer_score(v.openid)
         }, {
             "text": v.creator.first_name
         }, {
@@ -117,8 +124,8 @@ def load_volunteer_list(request):
             "id": "groupTable",
             "name": u"志愿者列表",
             "label": "group",
-            "header": ["ID", u"姓名", u"小组", u"电话", u"工作证号", u"工作年限", u"创建人", u"创建时间"],
-            "labels": ["openid", "name", "group_id", "phone", "cert_number", "year", "creator_username", "create_time"],
+            "header": ["ID", u"姓名", u"小组", u"电话", u"Email", u"工作证号", u"工作年限", u"积分", u"创建人", u"创建时间"],
+            "labels": ["openid", "name", "group_id", "phone", "email", "cert_number", "year", "score", "creator_username", "create_time"],
             "edit": {
                 "link": "/volunteer/update_volunteer_info",
                 "items": [
@@ -151,6 +158,11 @@ def load_volunteer_list(request):
                     {
                         "index": 5,
                         "enable": True,
+                        "type": "text"
+                    },
+                    {
+                        "index": 6,
+                        "enable": True,
                         "type": "number"
                     }
                 ]
@@ -171,14 +183,14 @@ def download_volunteer_list(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="volunteer_list_%s.csv"' % datetime.date.today().strftime("%Y_%m_%d")
     writer = csv.writer(response)
-    header = [u"姓名", u"小组", u"电话", u"工作证号", u"工作年限", u"创建人", u"创建时间"]
+    header = [u"姓名", u"小组", u"电话", u"Email", u"工作证号", u"工作年限", u"创建人", u"创建时间"]
     writer.writerow([unicode(s).encode("utf-8") for s in header])
     if request.user.is_superuser:
         volun_list = Volunteer.objects.all()
     else:
         volun_list = Volunteer.objects.filter(group__admin__username=request.user.username)
     for v in volun_list:
-        items = [v.name, v.group.name if v.group else u"未分组", v.phone, v.cert_number, v.year, v.creator.first_name, format_datetime_str(v.create_time)]
+        items = [v.name, v.group.name if v.group else u"未分组", v.phone, v.email, v.cert_number, v.year, v.creator.first_name, format_datetime_str(v.create_time)]
         writer.writerow([unicode(s).encode("utf-8") for s in items])
 
     return response

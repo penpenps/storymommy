@@ -7,12 +7,14 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from activity_type.models import ActivityType
 from volunteer.models import Volunteer
-from group.models import get_superadmin
+from group.models import get_superadmin, Group
 
 
 class Training(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
+    is_private = models.BooleanField(default=False)
+    group = models.ForeignKey(Group, on_delete=models.SET(None), null=True)
     creator = models.ForeignKey(User, on_delete=models.SET(get_superadmin))
     create_time = models.DateTimeField(default=timezone.now)
 

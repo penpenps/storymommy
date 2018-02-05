@@ -1,0 +1,71 @@
+<!-- Template DataTables Card-->
+{% load get_at_index %}
+<div class="card mb-3" style="width:100%">
+    <div class="card-header">
+        <i class="fa fa-table"></i>&nbsp;培训列表</div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="training-table" width="100%" cellspacing="0">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名称</th>
+                    <th>所属小组</th>
+                    {% if is_superuser %}
+                    <th>权限</th>
+                    {% endif %}
+                    <th>活动设置</th>
+                    <th>操作</th>
+
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for training in training_list %}
+                <tr training_id="{{training.id}}">
+                    <td value="{{training.id}}" label="id">{{forloop.counter}}</td>
+                    <td value="{{training.name}}" label="name">{{training.name}}</td>
+                    <td value="{{training.group_id}}" label="group_id">{{training.group_name}}</td>
+                    {% if is_superuser %}
+                    <td value="{{training.is_private_value}}" label="is_private">{{training.is_private}}</td>
+                    {% endif %}
+                    <td label="at_list">
+                        <ul>
+                        {% for type in training.types %}
+                        <li value="{{type.id}}" order="{{type.order}}" at_id="{{type.at_id}}">{{type.order}} - {{type.at_name}}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                    <td>
+                        <a class="mr-3 d-inline-block table-edit-btn" style="cursor:pointer">
+                            <i class="fa fa-fw fa-pencil"></i></a>
+                        <a class="mr-3 d-inline-block table-remove-btn" style="cursor:pointer" data-toggle="modal" param="id" data-target="#training-remove-modal">
+                            <i class="fa fa-fw fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% include 'training_form.html' %}
+<div class="modal fade" id="training-remove-modal" tabindex="-1" role="dialog" aria-labelledby="removeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removeModalLabel">确认删除</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">确定删除"<span id="remove-modal-content" class="text-info" label="name"></span>"吗?</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+                {% csrf_token %}
+                <button class="btn btn-primary" id="remove-confirm-btn" link="/training/remove_training/">确定</button>
+            </div>
+        </div>
+    </div>
+</div>

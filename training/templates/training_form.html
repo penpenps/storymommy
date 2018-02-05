@@ -1,0 +1,81 @@
+
+<div class="modal fade" id="training-{{form.label}}-modal" tabindex="-1" role="dialog" aria-labelledby="training-{{form.label}}-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="training-{{form.label}}-lable">{{form.name}}</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{form.link}}" id="training-{{form.label}}-form" method="post" label="{{form.label}}">
+                    <div class="alert alert-danger error-box" role="alert" style="display: none">
+                        <span class="error-msg"></span>
+                    </div>
+                    {% for item in form.items %}
+
+                    <div class="form-group">
+                        <label for="{{item.label}}">{{item.name}}</label>
+                        {% if item.type == 'select' %}
+                        <select class="form-control" id="{{item.label}}" name="{{item.label}}">
+                            {% for opt in item.options %}
+                            <option value="{{opt.value}}">{{opt.text}}</option>
+                            {% endfor %}
+                        </select>
+                        {% else %}
+                        <input class="form-control" id="{{item.label}}" type="{{item.type}}" name="{{item.label}}" placeholder="">
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <div class="list-group-template">
+                        <li class="list-group-item d-flex justify-content-between align-items-center ">
+                            <div class="form-group col-lg-3">
+                                <label for="ta_order">序号</label>
+                                <input class="form-control" id="ta_order" type="number" name="ta_order" value="0" placeholder="">
+                            </div>
+                            <div class="form-group col-lg-8">
+                                <label for="ta_type">活动类型</label>
+                                <select class="form-control" id="ta_type" name="ta_type">
+                                    {% for opt in ta_types %}
+                                    <option value="{{opt.value}}">{{opt.text}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <a class="d-inline-block text-danger ta-delete-btn">
+                                <i class="fa fa-fw fa-minus-circle"></i></a>
+                        </li>
+                    </div>
+                    <ul class="list-group ta-list-group">
+                        <div class="ta-add-btn-panel">
+                            <a class="text-info training-add-type-btn"><i class="fa fa-fw fa-plus-circle"></i></a>
+                        </div>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div class="form-group col-lg-3">
+                                <label for="ta_order">序号</label>
+                                <input class="form-control" id="ta_order_0" type="number" name="ta_order" value="0" placeholder="">
+                            </div>
+                            <div class="form-group col-lg-8">
+                                <label for="ta_type">活动类型</label>
+                                <select class="form-control" id="ta_type_0" name="ta_type">
+                                    {% for opt in ta_types %}
+                                    <option value="{{opt.value}}">{{opt.text}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <a class="d-inline-block text-danger ta-delete-btn">
+                                <i class="fa fa-fw fa-minus-circle"></i></a>
+                        </li>
+
+
+                    </ul>
+
+                    {% csrf_token %}
+                    <button id="training-{{form.label}}-btn" class="btn btn-primary btn-block">确定</button>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>

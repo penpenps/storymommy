@@ -12,6 +12,8 @@ from activity_type.admin import check_modify_activity_type_permission, get_privi
 from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
+from django.db.models import Sum
+import json
 
 
 def create_activity(name, type_id, start_time, end_time, address, admin_username):
@@ -141,3 +143,8 @@ def get_activity_register_status_as_options():
 
 def get_activity_register_count(activity_id):
     return ActivityRegister.objects.filter(activity__id=activity_id).count()
+
+
+def get_volunteer_score(openid):
+    res = ActivityRegister.objects.filter(volunteer__openid=openid, status=ActivityRegister.SIGNED_UP).annotate(total_score=Sum('activity__type__score'))
+    return res[0].total_score if len(res) > 0 else 0
