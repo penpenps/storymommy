@@ -27,3 +27,8 @@ UNKNOWN_ERROR = u"系统错误"
 
 # date and time
 DATETIME_FORMAT = "%Y/%m/%d %H:%M"
+
+
+# wechat
+APPID = "wx11f6b12b671694d9"
+SECRET = "271ea751f8dbbac1ad9de196063478a5"

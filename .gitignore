@@ -41,6 +41,6 @@ build.log
 build.log
 .sqlite3
 .DS_Store
-.gitignore
+stunnel.log
 *.log
 migrations/

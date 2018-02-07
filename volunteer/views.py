@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.shortcuts import redirect
 from models import Volunteer
 from common.Utils import format_datetime_str
 from common.Result import Result
@@ -12,8 +13,10 @@ from group.admin import get_all_group_as_options, check_group_exist
 from activity.admin import get_volunteer_score
 import admin
 import json
+import requests
 import csv
 import datetime
+import urllib
 from collections import defaultdict
 
 
@@ -211,3 +214,18 @@ def get_volunteer_list(request):
                     "value": str(v.openid)
                 })
     return HttpResponse(json.dumps(res), content_type="application/json")
+
+
+def register(request):
+    if 'code' not in request.GET:
+        redirect_uri = request.build_absolute_uri()
+        print "redirect_uri: %s" % redirect_uri
+        return redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s"\
+                        % (Consts.APPID, urllib.quote(redirect_uri, safe=""), "snsapi_base", "123#wechat_sign"))
+
+    code = request.GET["code"]
+    url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" % (Consts.APPID, Consts.SECRET, code)
+    response = requests.get(url)
+    ret = json.loads(response.text)
+    print ret
+    return render(request, 'table.html', {"openid": ret['openid']})
