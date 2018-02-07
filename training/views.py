@@ -7,9 +7,11 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from group.admin import get_all_group_as_options, check_group_exist
 from activity_type.admin import get_all_types_as_options
+from volunteer.admin import check_volunteer_exist
 from common.Utils import format_datetime_str
 from common.Result import Result
 from common import Consts
+from models import Training, TrainingRegister
 import admin
 import json
 import csv
@@ -202,3 +204,62 @@ def download_training_list(request):
         writer.writerow([unicode(s).encode("utf-8") for s in items])
 
     return response
+
+
+@login_required
+def training_register_list(request, training_id):
+    if not admin.check_training_exist(training_id):
+        return render(request, 'error.html', {"error_msg": Consts.NOT_FOUND_TRAINING_MSG})
+    training = Training.objects.get(id=training_id)
+    data = {
+        "training": admin.get_training_status(training),
+        "register_list": admin.get_all_training_register(request.user, training.id)
+    }
+    return render(request, 'training_register.html', data)
+
+
+@login_required
+def register_training(request):
+    training_id = request.POST['training_id']
+    volun_list = request.POST['volun_list'].split(',')
+    res = {"success": 0, "failed": 0, "msg": {}}
+    username = request.user.username
+    for v_id in volun_list:
+        if not check_volunteer_exist(v_id):
+            res['failed'] += 1
+            res['msg'][v_id] = Consts.NOT_FOUND_VOLUNTEER_MSG
+            continue
+        if not admin.check_training_register_permission(username, training_id, v_id):
+            res['failed'] += 1
+            res['msg'][v_id] = Consts.NO_PERMISSION_MSG
+            continue
+        if admin.check_training_register_exist(training_id, v_id):
+            res['failed'] += 1
+            res['msg'][v_id] = Consts.TRAINING_REGISTER_EXIST_MSG
+            continue
+        try:
+            admin.register_training(training_id, v_id, username)
+            res['success'] += 1
+        except:
+            res['failed'] += 1
+            res['msg'][v_id] = Consts.UNKNOWN_ERROR
+    return HttpResponse(json.dumps(res), content_type="application/json")
+
+
+@login_required
+def remove_training_register(request, register_id):
+    result = Result()
+    if not TrainingRegister.objects.filter(id=register_id).first():
+        result.code = Consts.FAILED_CODE
+        result.msg = Consts.NOT_FOUND_TRAINING_REGISTER_MSG
+        return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")
+
+    try:
+        admin.remove_training_register(register_id)
+        result.code = Consts.SUCCESS_CODE
+
+    except:
+        result.code = Consts.FAILED_CODE
+        result.msg = Consts.UNKNOWN_ERROR
+        # raise
+    return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")

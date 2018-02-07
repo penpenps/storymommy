@@ -98,7 +98,7 @@ def register_activity(activity_id, openid, admin_username, training_activity_id=
         ActivityRegister.objects.create(activity=activity, volunteer=volunteer, creator=admin)
     else:
         training_activity = TrainingActivity.objects.get(id=training_activity_id)
-        ActivityRegister.objects.create(activity=activity, volunteer=volunteer, creator=admin, training_activity=training_activity)
+        ActivityRegister.objects.create(activity=activity, volunteer=volunteer, creator=admin, training_activity_mapping=training_activity)
 
 
 def check_register_activity_permission(username, activity_id, openid):

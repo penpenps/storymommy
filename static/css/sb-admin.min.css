@@ -36,3 +36,7 @@
  .list-group-template{
     display:none;
  }
+
+ #training-list-group{
+    display:none;
+ }

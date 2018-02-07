@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block link %}
+<link href="/static/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+<link href="/static/vendor/boostrap.multiselect/css/bootstrap-multiselect.css" rel="stylesheet">
+{% endblock %}
+{% block page %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-6 col-md-6">
+            <h4>{{training.name}}</h4>
+        </div>
+        <div class="col-lg-6 col-md-6 float-right">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#training-register-modal"><i class="fa fa-fw fa-plus"></i>&nbsp;注册培训</button>
+
+            &nbsp;&nbsp;
+            <a target="_blank" class="btn btn-primary" href="/training/download_training_register_list/{{training.id}}"><i class="fa fa-fw fa-cloud-download"></i>&nbsp;导出列表</a>
+
+        </div>
+    </div>
+    <hr class="mt-2">
+    <div class="row card mb-3" style="width:100%">
+        <div class="card-header">
+            <i class="fa fa-info-circle"></i> 培训信息</div>
+        <div class="card-body">
+            <p>所属小组:&nbsp;{{training.group_name}}</p>
+            <p>权限:&nbsp;{{training.is_private}}</p>
+            <p>{{training.creator}} &nbsp;{{training.create_time}}&nbsp;创建</p>
+        </div>
+    </div>
+    <div class="row" id="table-panel" training_id="{{training.id}}">
+        <div class="card mb-3" style="width:100%">
+            <div class="card-header">
+                <i class="fa fa-table"></i>&nbsp;注册列表</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="training-table" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>志愿者</th>
+                            <th>状态</th>
+                            <th>操作</th>
+
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for register in register_list %}
+                        <tr register_id="{{register.id}}">
+                            <td value="{{register.id}}" label="id">{{forloop.counter}}</td>
+                            <td label="name" value="{{register.name}}">{{register.name}}</td>
+                            <td label="at_list">
+                                <ul>
+                                    {% for activity in register.activity_list %}
+                                    {% if activity.name %}
+                                    <li>{{activity.order}}&nbsp;-&nbsp;{{activity.type}}&nbsp;-&nbsp;{{activity.name}}-&nbsp;{{activity.status}}</li>
+                                    {% else %}
+                                    <li>{{activity.order}}&nbsp;-&nbsp;{{activity.type}}&nbsp;-&nbsp;暂未注册具体活动</li>
+                                    {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>
+                                <a class="mr-3 d-inline-block table-remove-btn" style="cursor:pointer" data-toggle="modal" param="id" data-target="#training-remove-modal">
+                                    <i class="fa fa-fw fa-trash"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="training-register-modal" tabindex="-1" role="dialog" aria-labelledby="training-register-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="training-register-lable">注册{{training.name}}</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/training/register/" method="post" id="training-register-form" label="training-register">
+                        <div class="alert alert-danger error-box" role="alert" style="display: none">
+                            <span class="error-msg"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="group-select">所属小组</label>
+                            <select id="group-select" class="form-control" multiple="multiple">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="volunteer-select">选择需注册的志愿者</label>
+                            <select id="volunteer-select" class="form-control" multiple="multiple">
+                            </select>
+                        </div>
+
+                        {% csrf_token %}
+                        <button id="training-register-btn" type="submit" class="btn btn-primary btn-block">注册</button>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="training-register-result-modal" tabindex="-1" role="dialog" aria-labelledby="training-register-result-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="training-register-result-lable">注册结果</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-success" id="success-info"></p>
+                    <p class="text-danger" id="error-info"></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onClick="window.location.reload()" >确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="training-remove-modal" tabindex="-1" role="dialog" aria-labelledby="removeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removeModalLabel">确认删除</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">确定删除"<span id="remove-modal-content" class="text-info" label="name"></span>"吗?</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+                {% csrf_token %}
+                <button class="btn btn-primary" id="remove-confirm-btn" link="/training/remove_training_register/">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="/static/vendor/datatables/jquery.dataTables.js"></script>
+<script src="/static/vendor/datatables/dataTables.bootstrap4.js"></script>
+
+<script src="/static/js/training_register.js"></script>
+{% endblock %}

@@ -79,12 +79,14 @@ WSGI_APPLICATION = 'storymommy.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+database_name = 'storymommy' if '/dev/' not in BASE_DIR else 'storymommy-test'
+
 DATABASES = {
     'default': {
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'storymommy',
+        'NAME': database_name,
         'USER': 'storymommy',
         'PASSWORD': 'story1234mommy',
         'HOST': 'localhost',

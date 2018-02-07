@@ -6,6 +6,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from activity_type.admin import get_all_types_as_options, check_activity_type_exist
 from volunteer.admin import check_volunteer_exist
+from training.admin import get_training_by_activity, check_training_register_exist, check_training_acitivity_exist
+from training.models import TrainingActivity
 from models import Activity
 from common.Utils import format_datetime_str
 from common.Result import Result
@@ -246,7 +248,8 @@ def activity_register_list(request, activity_id):
     at = Activity.objects.get(id=activity_id)
     data = {
         "pageName": at.name,
-        "activity": at
+        "activity": at,
+        "ta_list": get_training_by_activity(at.id)
     }
     return render(request, 'activity_register.html', data)
 
@@ -259,7 +262,8 @@ def load_activity_register_list(request, activity_id):
             "text": str(i+1),
             "value": r.id
         }, {
-            "text": r.volunteer.name
+            "text": r.volunteer.name,
+            "value": r.volunteer.name
         }, {
             "text": r.get_status_display(),
             "value": r.status
@@ -268,7 +272,7 @@ def load_activity_register_list(request, activity_id):
         }, {
             "text": format_datetime_str(r.create_time)
         }, {
-            "text": format_datetime_str(r.update_time)
+            "text": "%s-%d-%s" % (r.training_activity_mapping.training.name, r.training_activity_mapping.order, r.training_activity_mapping.activity_type.name) if r.training_activity_mapping else u"单独活动"
         }]
         if request.user.is_superuser:
             item.append({
@@ -281,8 +285,8 @@ def load_activity_register_list(request, activity_id):
             "id": "activityTable",
             "name": u"活动列表",
             "label": "activity",
-            "header": ["ID", u"志愿者", u"状态", u"创建者", u"注册时间", u"更新时间"],
-            "labels": ["id", "name", "status", "creator", "create_time", "update_time"],
+            "header": ["ID", u"志愿者", u"状态", u"创建者", u"注册时间", u"关联培训"],
+            "labels": ["id", "name", "status", "creator", "create_time", "training"],
             "edit": {
                 "link": "/activity/update_activity_register",
                 "items": [
@@ -336,6 +340,7 @@ def register_activity(request):
     activity_id = request.POST['activity_id']
     volun_list = request.POST['volun_list'].split(',')
     is_training = True if request.POST['type'] == 'training' else False
+    ta_id = request.POST['ta_id']
     res = {"success": 0, "failed": 0, "msg": {}}
     username = request.user.username
     for v_id in volun_list:
@@ -352,11 +357,20 @@ def register_activity(request):
             res["msg"][v_id] = Consts.NO_PERMISSION_MSG
             continue
         try:
-            admin.register_activity(activity_id, v_id, username)
+            if is_training and check_training_acitivity_exist(ta_id):
+                ta = TrainingActivity.objects.get(id=ta_id)
+                if not check_training_register_exist(ta.training.id, v_id):
+                    res["failed"] += 1
+                    res["msg"][v_id] = Consts.NOT_FOUND_TRAINING_REGISTER_MSG
+                    continue
+                admin.register_activity(activity_id, v_id, username, ta_id)
+            else:
+                admin.register_activity(activity_id, v_id, username)
             res["success"] += 1
         except:
             res["failed"] += 1
             res["msg"][v_id] = Consts.UNKNOWN_ERROR
+            raise
     return HttpResponse(json.dumps(res), content_type="application/json")
 
 

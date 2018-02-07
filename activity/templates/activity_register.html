@@ -63,9 +63,21 @@
                             <div class="form-check">
                                 <label class="form-check-label">
                                     <input type="radio" class="form-check-input" name="register-type" id="training-register" value="training">
-                                    培训活动
+                                    连续活动
                                 </label>
                             </div>
+                        </div>
+                        <div class="form-group" id="training-list-group">
+                            <label for="training-select">选择关联的培训</label>
+                            <select id="training-select" class="form-control" >
+                                {% if ta_list %}
+                                {% for ta in ta_list %}
+                                <option value="{{ta.id}}">{{ta.training.name}}-{{ta.order}}-{{ta.activity_type.name}}</option>
+                                {% endfor %}
+                                {% else %}
+                                <option value="-">暂无可选培训</option>
+                                {% endif %}
+                            </select>
                         </div>
 
                         {% csrf_token %}
@@ -101,7 +113,6 @@
 {% block script %}
 <script src="/static/vendor/datatables/jquery.dataTables.js"></script>
 <script src="/static/vendor/datatables/dataTables.bootstrap4.js"></script>
-<script src="/static/vendor/boostrap.multiselect/js/bootstrap-multiselect.js"></script>
 
 <script src="/static/js/activity_register.js"></script>
 {% endblock %}

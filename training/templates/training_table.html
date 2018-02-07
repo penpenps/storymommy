@@ -14,6 +14,7 @@
                     {% if is_superuser %}
                     <th>权限</th>
                     {% endif %}
+                    <th>人数</th>
                     <th>活动设置</th>
                     <th>操作</th>
 
@@ -24,11 +25,12 @@
                 {% for training in training_list %}
                 <tr training_id="{{training.id}}">
                     <td value="{{training.id}}" label="id">{{forloop.counter}}</td>
-                    <td value="{{training.name}}" label="name">{{training.name}}</td>
+                    <td value="{{training.name}}" label="name"><a target="_blank" href="/training/register_list/{{training.id}}/">{{training.name}}</a></td>
                     <td value="{{training.group_id}}" label="group_id">{{training.group_name}}</td>
                     {% if is_superuser %}
                     <td value="{{training.is_private_value}}" label="is_private">{{training.is_private}}</td>
                     {% endif %}
+                    <td>{{training.count}}</td>
                     <td label="at_list">
                         <ul>
                         {% for type in training.types %}
