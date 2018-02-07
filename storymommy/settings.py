@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'storymommy.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-database_name = 'storymommy' if '/dev/' not in BASE_DIR else 'storymommy-test'
+database_name = 'storymommy' if '/dev/' not in BASE_DIR else 'storymommy_test'
 
 DATABASES = {
     'default': {
