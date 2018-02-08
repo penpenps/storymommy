@@ -9,7 +9,7 @@ def wechat_auth_required(function):
     def wrap(request, *args, **kwargs):
         if 'code' not in request.GET:
             redirect_uri = request.build_absolute_uri()
-            if request.is_secure():
+            if request.is_secure() and not redirect_uri.startswith('https://'):
                 redirect_uri = redirect_uri.replace("http", "https")
             print "is_secure: %s, redirect_uri: %s" % (request.is_secure(), redirect_uri)
 

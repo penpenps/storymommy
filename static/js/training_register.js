@@ -41,12 +41,15 @@ $(document).ready(function(){
 
     $('#training-register-form').submit(function (e) {
         e.preventDefault();
+        var submit-btn = $(this).find('button[type="submit"]');
+        submit-btn.prop( "disabled", true );
         var data = {
             "training_id": $('#table-panel').attr('training_id'),
             "volun_list": $('#volunteer-select').val().join(","),
             "csrfmiddlewaretoken": jQuery("[name=csrfmiddlewaretoken]").val()
         };
         $.post($(this).attr("action"), data, function(res){
+            submit-btn.prop( "disabled", false );
             $("#training-register-modal").modal('hide');
             $("#training-register-result-modal").modal();
             if(res["success"] > 0){

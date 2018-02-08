@@ -50,6 +50,8 @@
 
     $('.upload-modal-form').submit(function (e) {
           e.preventDefault();
+          var submit-btn = $(this).find('button[type="submit"]');
+          submit-btn.prop( "disabled", true );
           var data = new FormData(this);
           var label = $(this).attr('label');
           $.ajax({
@@ -60,7 +62,8 @@
               processData: false,
               contentType: false,
               success: function (res, status){
-                    console.log(res['msg']);
+//                    console.log(res['msg']);
+                    submit-btn.prop( "disabled", false );
                     $('#'+label+"-upload-modal").modal('hide');
                     $('#'+label+"-upload-callback-modal").modal();
                     $('#'+label+"-upload-callback-msg").text(res['msg']);
@@ -75,6 +78,8 @@
 function add_form_event(callback){
     $('.add-form').submit(function (e) {
         e.preventDefault();
+        var submit-btn = $(this).find('button[type="submit"]');
+        submit-btn.prop( "disabled", true );
         var label = $(this).attr('label');
         $(this).find('.error-box').hide();
         if(!$(this).checkFormInputs(this)){
@@ -82,6 +87,7 @@ function add_form_event(callback){
         }
         var data = $(this).serializeFormJSON();
         $.post($(this).attr('action'), data, function(res){
+            submit-btn.prop( "disabled", false );
             if(res['code'] == 0){
                 $('#'+label+'-add-modal').modal('hide');
                 callback();
@@ -152,6 +158,8 @@ function load_table_content(load_url, table_panel_id, table_id){
 
         $('.edit-form').submit(function (e) {
             e.preventDefault();
+            var submit-btn = $(this).find('button[type="submit"]');
+            submit-btn.prop( "disabled", true );
             $(this).find('.error-box').hide();
             if(!$(this).checkFormInputs(this)){
                 return;
@@ -159,6 +167,7 @@ function load_table_content(load_url, table_panel_id, table_id){
             var data = $(this).serializeFormJSON();
             var label = $(this).attr('label');
             $.post($(this).attr('action'), data, function(res){
+                submit-btn.prop( "disabled", false );
                 if(res['code'] == 0){
                     location.reload();
                 }
