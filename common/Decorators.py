@@ -16,6 +16,7 @@ def wechat_auth_required(function):
 
             return redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s" \
                             % (Consts.APPID, urllib.quote(redirect_uri, safe=""), "snsapi_base", "123#wechat_sign"))
+        return wrap
     wrap.__doc__ = function.__doc__
     wrap.__name__ = function.__name__
     return wrap
