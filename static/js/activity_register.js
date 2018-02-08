@@ -23,8 +23,8 @@ $(document).ready(function(){
 
     $('#activity-register-form').submit(function (e) {
         e.preventDefault();
-        var submit-btn = $(this).find('button[type="submit"]');
-        submit-btn.prop( "disabled", true );
+        var submit_btn = $(this).find('button[type="submit"]');
+        submit_btn.prop( "disabled", true );
         var data = {
             "activity_id": $('#table-panel').attr('activity_id'),
             "volun_list": $('#volunteer-select').val().join(","),
@@ -33,7 +33,7 @@ $(document).ready(function(){
             "csrfmiddlewaretoken": jQuery("[name=csrfmiddlewaretoken]").val()
         };
         $.post($(this).attr("action"), data, function(res){
-            submit-btn.prop( "disabled", false );
+            submit_btn.prop( "disabled", false );
             $("#activity-register-modal").modal('hide');
             $("#activity-register-result-modal").modal();
             if(res["success"] > 0){
@@ -58,13 +58,13 @@ $(document).ready(function(){
 
     $('#qrcode-btn').click(function(e){
         e.preventDefault();
-        var submit-btn = $(this);
-        submit-btn.prop( "disabled", true );
+        var submit_btn = $(this);
+        submit_btn.prop( "disabled", true );
         $.get("/volunteer/get_qrcode/", {
             "type": "signup",
             "activity_id": $('#table-panel').attr('activity_id')
         }, function(res){
-            submit-btn.prop( "disabled", false );
+            submit_btn.prop( "disabled", false );
             $('#qrcode-modal').modal();
             $('#qrcode-error').hide();
 
