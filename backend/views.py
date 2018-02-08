@@ -16,7 +16,9 @@ from django.db import transaction
 from common import Consts
 from common.Utils import format_datetime_str
 from common.Result import *
+from volunteer.views import register, signup
 from admin import is_username_valid, create_user, update_user, remove_user
+from models import Qrcode
 
 
 @login_required
@@ -302,3 +304,16 @@ def auth(request):
         result.msg = Consts.LOGIN_FAILED_MSG
     return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")
 
+
+def proc_qrcode(request, qrcode_id):
+    qr = Qrcode.objects.filter(id=qrcode_id).first()
+    if not qr:
+        return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.QR_NOT_FOUND_MSG})
+    if qr.expire_time < datetime.datetime.now():
+        return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.EXPIRED_QRCODE_MSG})
+
+    if qr.type == Qrcode.REGISTER:
+        return register(request, qrcode_id)
+    if qr.type == Qrcode.SIGN_UP:
+        return signup(request, qr.activity.id)
+    return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.QR_NOT_FOUND_MSG})

@@ -6,17 +6,19 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import redirect
 from models import Volunteer
-from common.Utils import format_datetime_str
+from common.Utils import format_datetime_str, get_openid, get_random_str, get_absolute_url, generate_qrcode
 from common.Result import Result
 from common import Consts
-from group.admin import get_all_group_as_options, check_group_exist
-from activity.admin import get_volunteer_score
+from common.Decorators import wechat_auth_required
+from group.admin import get_all_group_as_options, check_group_exist, get_all_groups
+from activity.admin import get_volunteer_score, check_activity_exist, update_activity_register_status, check_activity_register_exist
+from activity.models import Activity, ActivityRegister
+from training.models import TrainingActivity
+from backend.models import Qrcode
 import admin
 import json
-import requests
 import csv
 import datetime
-import urllib
 from collections import defaultdict
 
 
@@ -216,16 +218,123 @@ def get_volunteer_list(request):
     return HttpResponse(json.dumps(res), content_type="application/json")
 
 
-def register(request):
-    if 'code' not in request.GET:
-        redirect_uri = request.build_absolute_uri()
-        print "redirect_uri: %s" % redirect_uri
-        return redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s"\
-                        % (Consts.APPID, urllib.quote(redirect_uri, safe=""), "snsapi_base", "123#wechat_sign"))
-
+@wechat_auth_required
+def register(request, qrcode_id):
     code = request.GET["code"]
-    url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" % (Consts.APPID, Consts.SECRET, code)
-    response = requests.get(url)
-    ret = json.loads(response.text)
-    print ret
-    return render(request, 'table.html', {"openid": ret['openid']})
+    openid = get_openid(code)
+    # openid = get_random_str()
+    return render(request, 'register.html', {
+        "pageName": u'"故事妈妈"志愿者注册',
+        "qrcode_id": qrcode_id,
+        "openid": openid
+    })
+
+
+@wechat_auth_required
+def signup(request, activity_id):
+    code = request.GET["code"]
+    openid = get_openid(code)
+    # openid = "vziO4SeF"
+    if not admin.check_volunteer_exist(openid):
+        return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.NOT_FOUND_VOLUNTEER_MSG})
+    if not check_activity_exist(activity_id):
+        return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.NOT_FOUND_ACTIVITY_MSG})
+    if not check_activity_register_exist(activity_id, openid):
+        return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.NOT_FOUND_ACTIVITY_REGISTER_MSG})
+    activity = Activity.objects.get(id=activity_id)
+    if activity.start_time > datetime.datetime.now() + datetime.timedelta(hours=1):
+        return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.ACTIVITY_NOT_START_MSG})
+    if activity.end_time < datetime.datetime.now() - datetime.timedelta(hours=1):
+        return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.ACTIVITY_REG_END_MSG})
+    reg = ActivityRegister.objects.get(activity__id=activity_id, volunteer__openid=openid)
+    if reg.training_activity_mapping:
+        ta = reg.training_activity_mapping
+        pre_tas = TrainingActivity.objects.filter(training__id=ta.training.id, order__lt=ta.order)
+        for p in pre_tas:
+            print p.training.name, p.activity_type.name, ta.order, p.order
+            pre_reg = ActivityRegister.objects.filter(training_activity_mapping__id=p.id, volunteer__openid=openid).first()
+            if not pre_reg or pre_reg.status != ActivityRegister.SIGNED_UP:
+                return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.PRE_ACTIVITIES_ABSENT_MSG})
+    if reg.status == ActivityRegister.SIGNED_UP:
+        return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.ACTIVITY_SIGNUP_EXIST_MSG})
+    update_activity_register_status(reg.id, ActivityRegister.SIGNED_UP)
+    return render(request, 'mobile_callback.html', {"type": "success", "content": u"签到成功。"})
+
+
+def mobile_error(request):
+    return render(request, 'mobile_callback.html', {"type": "danger", "content": u"发生未知系统错误。"})
+
+
+def register_volunteer(request):
+    openid = request.POST['openid']
+    qrcode_id = request.POST['qrcode_id']
+    email = request.POST['email']
+    name = request.POST['name']
+    phone = request.POST['phone']
+    cert_number = request.POST['cert-number']
+    year = request.POST['year']
+
+    result = Result()
+    if admin.check_volunteer_exist(openid):
+        result.code = Consts.FAILED_CODE
+        result.msg = Consts.VOLUNTEER_EXIST_MSG
+        return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")
+
+    qr = Qrcode.objects.filter(id=qrcode_id).first()
+    if not qr:
+        return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.QR_NOT_FOUND_MSG})
+    if qr.expire_time < datetime.datetime.now():
+        return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.EXPIRED_QRCODE_MSG})
+
+    user = qr.creator
+    group_id = None
+    if not user.is_superuser and len(get_all_groups(user.username)) > 0:
+        group_id = get_all_groups(user.username).first().id
+
+    try:
+        admin.create_volunteer(user.username, openid, name, phone, email, cert_number, year, group_id)
+        return render(request, 'mobile_callback.html', {"type": "success", "content": u"注册成功"})
+    except:
+        result.code = Consts.FAILED_CODE
+        result.msg = Consts.UNKNOWN_ERROR
+    return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")
+
+
+@login_required
+def get_qrcode(request):
+    result = Result()
+    if 'type' not in request.GET:
+        result.code = Consts.FAILED_CODE
+        result.msg = Consts.NOT_GIVEN_QRCODE_TYPE_MSG
+        return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")
+
+    activity_id = request.GET['activity_id'] if 'activity_id' in request.GET else None
+    _type = Qrcode.REGISTER if request.GET['type'] == 'register' else Qrcode.SIGN_UP
+    try:
+        username = request.user.username
+        if request.GET['type'] == 'register':
+            qr = Qrcode.objects.filter(creator__username=username, type=_type, expire_time__gt=datetime.datetime.now()).first()
+            if not qr:
+                expire_time = datetime.datetime.now() + datetime.timedelta(days=7)
+                qr = Qrcode.objects.create(creator=request.user, type=Qrcode.REGISTER, expire_time=expire_time)
+        else:
+            if not check_activity_exist(activity_id):
+                result.code = Consts.FAILED_CODE
+                result.msg = Consts.NOT_GIVEN_QRCODE_TYPE_MSG
+                return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")
+            qr = Qrcode.objects.filter(creator__username=username, type=_type, activity__id=activity_id, expire_time__gt=datetime.datetime.now()).first()
+            if not qr:
+                expire_time = datetime.datetime.now() + datetime.timedelta(days=7)
+                activity = Activity.objects.get(id=activity_id)
+                qr = Qrcode.objects.create(creator=request.user, type=Qrcode.SIGN_UP, expire_time=expire_time, activity=activity)
+        url = request.build_absolute_uri(get_absolute_url(qr.id))
+        print url
+        img = generate_qrcode(url)
+        response = HttpResponse(content_type='image/svg+xml')
+        img.save(response)
+        return response
+    except:
+        result.code = Consts.FAILED_CODE
+        result.msg = Consts.UNKNOWN_ERROR
+        # raise
+    return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")

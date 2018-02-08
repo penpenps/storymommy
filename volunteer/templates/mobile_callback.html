@@ -1,0 +1,15 @@
+{% extends "mobile_base.html" %}
+{% block page %}
+<div class="row" style="padding: 50px 30px; text-align:center;">
+
+    <p class="text-{{type}}" style="width:100%">
+        {% if type == 'danger' %}
+        <i class="fa fa-fw fa-exclamation-circle"></i>&nbsp;
+        {% elif type == 'success' %}
+        <i class="fa fa-fw fa-check-circle"></i>&nbsp;
+        {% endif %}
+        {{content}}
+    </p>
+</div>
+
+{% endblock %}

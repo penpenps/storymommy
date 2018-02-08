@@ -40,3 +40,8 @@
  #training-list-group{
     display:none;
  }
+
+ .page-header{
+    text-align:center;
+    margin:1em auto;
+ }

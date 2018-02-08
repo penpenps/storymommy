@@ -53,6 +53,25 @@ $(document).ready(function(){
         });
     });
 
+    $('#qrcode-btn').click(function(e){
+        e.preventDefault();
+        $.get("/volunteer/get_qrcode/", {
+            "type": "signup",
+            "activity_id": $('#table-panel').attr('activity_id')
+        }, function(res){
+            $('#qrcode-modal').modal();
+            $('#qrcode-error').hide();
+
+            if(res.code == 1){
+                $('#qrcode-img').show();
+                $('#qrcode-error').html(res.msg);
+                return;
+            }
+            $('#qrcode-img').html(res.documentElement);
+
+        });
+    });
+
 });
 
 function load_activity_register_list(){

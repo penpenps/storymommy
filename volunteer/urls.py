@@ -10,6 +10,9 @@ urlpatterns = [
     url(r'^update_volunteer_info', views.update_volunteer_info, name='update_volunteer_info'),
     url(r'^download_volunteer_list', views.download_volunteer_list, name='download_volunteer_list'),
     url(r'^remove_volunteer/(?P<openid>[\w\-]+)/', views.remove_volunteer, name='remove_volunteer'),
-    url(r'^register', views.register, name="register")
+    url(r'^register/(?P<qrcode_id>[\w\-]+)/', views.register, name="register"),
+    url(r'^register_volunteer', views.register_volunteer, name="register_volunteer"),
+    url(r'^get_qrcode', views.get_qrcode, name='get_qrcode'),
+    url(r'^error', views.mobile_error, name="register")
 
 ]

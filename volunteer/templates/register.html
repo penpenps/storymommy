@@ -1,10 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>注册故事妈妈</title>
-</head>
-<body>
-{{openid}}
-</body>
-</html>
+{% extends "mobile_base.html" %}
+{% block page %}
+
+<form action="/volunteer/register_volunteer/" method="POST" class="add-form">
+    <fieldset>
+        <div class="alert alert-danger error-box" role="alert" style="display: none">
+            <span class="error-msg"></span>
+        </div>
+        <div class="form-group">
+            <label for="name">姓名:</label>
+            <input type="text" class="form-control" id="name" name="name"  placeholder="">
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="">
+            <small id="emailHelp" class="form-text text-muted">仅用于系统通知</small>
+        </div>
+        <div class="form-group">
+            <label for="phone">电话:</label>
+            <input type="text" class="form-control" id="phone" name="phone"  placeholder="">
+        </div>
+        <div class="form-group">
+            <label for="cert-number">工作证号:</label>
+            <input type="text" class="form-control" id="cert-number" name="cert-number" aria-describedby="certHelp" placeholder="">
+            <small id="certHelp" class="form-text text-muted">若暂时没有,请输入0</small>
+        </div>
+        <div class="form-group">
+            <label for="year">服务年限:</label>
+            <input type="number" class="form-control" id="year" name="year" value="0"  placeholder="">
+        </div>
+        <input type="hidden" name="openid" value="{{openid}}">
+        <input type="hidden" name="qrcode_id" value="{{qrcode_id}}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary btn-block">提交</button>
+    </fieldset>
+</form>
+<script>
+    $(document).ready(function(){
+        add_form_event();
+    });
+</script>
+{% endblock %}

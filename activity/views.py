@@ -93,10 +93,10 @@ def update_activity(request):
     address = request.POST['address']
     start_time = datetime.datetime.strptime(request.POST['start_time'], Consts.DATETIME_FORMAT)
     end_time = datetime.datetime.strptime(request.POST['end_time'], Consts.DATETIME_FORMAT)
-    if start_time < datetime.datetime.now():
-        result.code = Consts.FAILED_CODE
-        result.msg = Consts.ACTIVITY_END_MSG
-        return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")
+    # if start_time < datetime.datetime.now():
+    #     result.code = Consts.FAILED_CODE
+    #     result.msg = Consts.ACTIVITY_END_MSG
+    #     return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")
     if start_time >= end_time:
         result.code = Consts.FAILED_CODE
         result.msg = Consts.START_END_TIME_ERROR_MSG

@@ -180,7 +180,7 @@ def get_training_registers_status(registers):
             }
             activity_register = ActivityRegister.objects.filter(training_activity_mapping__id=ta.id, volunteer__openid=r.volunteer.openid).first()
             tmp['name'] = activity_register.activity.name if activity_register else None
-            tmp['status'] = activity_register.activity.get_status() if activity_register else None
+            tmp['status'] = activity_register.get_status_display() if activity_register else None
             item["activity_list"].append(tmp)
         res.append(item)
     return res
