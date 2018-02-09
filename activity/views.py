@@ -49,6 +49,7 @@ def activity(request):
 
     data = {
         "pageName": u"活动列表",
+        "is_superuser": request.user.is_superuser,
         "add": {
             "label": "activity",
             "link": "/activity/create_activity/",
@@ -248,6 +249,7 @@ def activity_register_list(request, activity_id):
     at = Activity.objects.get(id=activity_id)
     data = {
         "pageName": at.name,
+        "is_superuser": request.user.is_superuser,
         "activity": at,
         "ta_list": get_training_by_activity(at.id)
     }

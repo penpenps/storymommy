@@ -18,13 +18,21 @@ from common.Utils import format_datetime_str
 from common.Result import *
 from volunteer.views import register, signup
 from admin import is_username_valid, create_user, update_user, remove_user
+from volunteer.admin import get_volunteers_by_admin
+from activity_type.admin import get_privileged_types
+from activity.admin import get_privileged_activities
 from models import Qrcode
 
 
 @login_required
 def index(request):
+    username = request.user.username
     data = {
-        "pageName": u"首页"
+        "pageName": u"首页",
+        "is_superuser": request.user.is_superuser,
+        "volunteer_cnt": len(get_volunteers_by_admin(username)),
+        "activity_type_cnt": len(get_privileged_types(request.user)),
+        "activity_cnt": len(get_privileged_activities(request.user))
     }
     return render(request, 'index.html', data)
 
@@ -34,6 +42,7 @@ def index(request):
 def admin(request):
     data = {
         "pageName": u"管理员",
+        "is_superuser": request.user.is_superuser,
         "add": {
             "label": "admin",
             "link": "/backend/create_admin",
@@ -317,3 +326,43 @@ def proc_qrcode(request, qrcode_id):
     if qr.type == Qrcode.SIGN_UP:
         return signup(request, qr.activity.id)
     return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.QR_NOT_FOUND_MSG})
+
+
+@login_required
+def profile(request):
+    return render(request, 'profile.html', {"user": request.user, "is_superuser": request.user.is_superuser})
+
+
+@login_required
+def update_user_profile(request):
+    name = request.POST['name']
+    email = request.POST['email']
+    phone = request.POST['phone']
+    result = Result()
+    try:
+        user = update_user(request.user.username, name, phone, email)
+        return HttpResponse(json.dumps({"name": user.first_name, "phone": user.last_name, "email": user.email}), content_type="application/json")
+    except:
+        result.code = Consts.FAILED_CODE
+        result.msg = Consts.UNKNOWN_ERROR
+    return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")
+
+
+@login_required
+def update_user_password(request):
+    pw = request.POST['password']
+    confirm_pw = request.POST['confirm-password']
+    result = Result()
+    if pw != confirm_pw:
+        result.code = Consts.FAILED_CODE
+        result.msg = Consts.UPDATE_PASSWORD_UNMATCH_MSG
+        return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")
+    try:
+        user = request.user
+        user.set_password(pw)
+        user.save()
+        result.code = Consts.SUCCESS_CODE
+    except:
+        result.code = Consts.FAILED_CODE
+        result.msg = Consts.UNKNOWN_ERROR
+    return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")

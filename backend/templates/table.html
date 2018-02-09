@@ -22,9 +22,21 @@
                     <tr >
                         {% for item in row %}
                             {% if table.edit %}
-                                <td name="{{table.labels|get_at_index:forloop.counter0}}" value="{{item.value}}">{{ item.text }}</td>
+                                <td name="{{table.labels|get_at_index:forloop.counter0}}" value="{{item.value}}">
+                                    {% if item.link %}
+                                        <a target="_blank" href="{{item.link}}">{{ item.text }}</a>
+                                    {% else %}
+                                        {{ item.text }}
+                                    {% endif %}
+                                </td>
                             {% else %}
-                                <td>{{ item.text }}</td>
+                                <td>
+                                    {% if item.link %}
+                                    <a target="_blank" href="{{item.link}}">{{ item.text }}</a>
+                                    {% else %}
+                                    {{ item.text }}
+                                    {% endif %}
+                                </td>
                             {% endif %}
                         {% endfor %}
                         {% if table.edit or table.remove %}

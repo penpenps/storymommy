@@ -83,6 +83,7 @@ function add_form_event(callback){
         var label = $(this).attr('label');
         $(this).find('.error-box').hide();
         if(!$(this).checkFormInputs(this)){
+            submit_btn.prop( "disabled", false );
             return;
         }
         var data = $(this).serializeFormJSON();

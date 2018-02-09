@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from models import Volunteer
 from group.models import Group, get_superadmin
 from django.db import transaction
+from django.db.models import Q
 
 
 def check_volunteer_exist(openid):
@@ -63,3 +64,13 @@ def get_volunteers_by_group(group_id=None):
     if not group_id:
         return Volunteer.objects.filter(group=None)
     return Volunteer.objects.filter(group__id=group_id)
+
+
+def get_volunteers_by_admin(username):
+    try:
+        user = User.objects.get(username=username)
+        if user.is_superuser:
+            return Volunteer.objects.all()
+        return Volunteer.objects.filter(Q(creator__username=username) | Q(group__admin__username=username))
+    except:
+        return None

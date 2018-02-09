@@ -27,6 +27,7 @@ def update_user(username,  name, phone, email):
     user.last_name = phone
     user.email = email
     user.save()
+    return user
 
 
 def is_username_valid(user_name):

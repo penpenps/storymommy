@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block page %}
+<div class="container-fluid">
+<div class="row card mb-3" style="width:100%">
+    <div class="card-header">
+        <i class="fa fa-info-circle"></i> 志愿者信息</div>
+    <div class="card-body">
+        <p>姓名:<span class="profile-item" name="name">{{volunteer.name}}</span></p>
+        <p>Email:<span class="profile-item" name="email">{{volunteer.email}}</span></p>
+        <p>电话:<span class="profile-item" name="phone">{{volunteer.phone}}</span></p>
+        <p>工作证号:<span class="profile-item" name="phone">{{volunteer.cert_number}}</span></p>
+        <p>工作年限:<span class="profile-item" name="phone">{{volunteer.year}}</span></p>
+        <p>所属小组:<span class="profile-item" name="phone">
+            {% if volunteer.group %}
+                {{volunteer.group.name}}
+            {% else %}
+                未分组
+            {% endif %}
+        </span></p>
+
+    </div>
+</div>
+    <div style="width:100%">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#activity">参与活动</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#training">注册培训</a>
+            </li>
+
+        </ul>
+        <div id="volunteerTabContent" class="tab-content">
+            <div class="tab-pane fade show active" id="activity" style="margin:30px auto;">
+                <div id="activity-panel">
+                    <div class="list-group">
+                        {% for at in activity_list %}
+                        <a href="{{at.link}}" class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{at.name}}</h5>
+                                <small>
+                                    {% if at.status_value == 0 %}
+                                    <span class="text-primary">{{at.status}}</span>
+                                    {% elif at.status_value == 1%}
+                                    <span class="text-success">{{at.status}}</span>
+                                    {% elif at.status_value == 2 %}
+                                    <span class="text-danger">{{at.status}}</span>
+                                    {% endif %}
+                                </small>
+                            </div>
+                            <p class="mb-1">{{at.time}}</p>
+                            <small>{{at.address}}</small>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade show " id="training" style="margin:30px auto;">
+                <div id="training-panel">
+                    <div class="list-group">
+                        {% for t in training_list %}
+                        <a href="{{t.link}}" class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{t.training_name}}</h5>
+                                <small>
+                                    {% if t.status == 0 %}
+                                    <span class="text-primary">未开始</span>
+                                    {% elif t.status == 1%}
+                                    <span class="text-success">进行中</span>
+                                    {% elif t.status == 2 %}
+                                    <span class="text-danger">已结束</span>
+                                    {% endif %}
+                                </small>
+                            </div>
+                            {% for at in t.activity_list %}
+                            {% if at.name %}
+                            <p class="mb-1">{{at.name}}&nbsp;-&nbsp;{{at.status}}</p>
+                            {% endif %}
+                            {% endfor %}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

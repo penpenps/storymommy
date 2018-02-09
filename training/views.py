@@ -48,6 +48,7 @@ def training_list(request):
         })
     data = {
         "pageName": u"培训列表",
+        "is_superuser": request.user.is_superuser,
         "form": {
             "label": "add",
             "link": "/training/create_training/",
@@ -212,6 +213,7 @@ def training_register_list(request, training_id):
         return render(request, 'error.html', {"error_msg": Consts.NOT_FOUND_TRAINING_MSG})
     training = Training.objects.get(id=training_id)
     data = {
+        "is_superuser": request.user.is_superuser,
         "training": admin.get_training_status(training),
         "register_list": admin.get_all_training_register(request.user, training.id)
     }

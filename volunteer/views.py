@@ -13,7 +13,8 @@ from common.Decorators import wechat_auth_required
 from group.admin import get_all_group_as_options, check_group_exist, get_all_groups
 from activity.admin import get_volunteer_score, check_activity_exist, update_activity_register_status, check_activity_register_exist
 from activity.models import Activity, ActivityRegister
-from training.models import TrainingActivity
+from training.models import TrainingActivity, TrainingRegister
+from training.admin import get_training_registers_status
 from backend.models import Qrcode
 import admin
 import json
@@ -26,9 +27,61 @@ from collections import defaultdict
 def volunteer(request):
 
     data = {
-        "pageName": u"志愿者列表"
+        "pageName": u"志愿者列表",
+        "is_superuser": request.user.is_superuser
     }
     return render(request, 'volunteer.html', data)
+
+
+@login_required
+def volunteer_profile(request, openid):
+    if not admin.check_volunteer_exist(openid):
+        return render(request, 'error.html', {"error_msg": Consts.NOT_FOUND_VOLUNTEER_MSG})
+    if not admin.check_has_modify_permission(request.user.username, openid):
+        return render(request, 'error.html', {"error_msg": Consts.NO_PERMISSION_MSG})
+    return render(request, 'volunteer_profile.html', get_volunteer_profile(openid))
+
+
+def get_volunteer_profile(openid):
+    activities = ActivityRegister.objects.filter(volunteer__openid=openid).order_by('-create_time')
+    activity_payload = []
+    for at in activities:
+        activity_payload.append({
+            "name": at.activity.name,
+            "link": "/activity/register_list/%s/" % at.activity.id,
+            "time": format_datetime_str(at.activity.start_time) + " - " + format_datetime_str(at.activity.end_time),
+            "address": at.activity.address,
+            "status_value": at.status,
+            "status": at.get_status_display()
+        })
+
+    trainings = TrainingRegister.objects.filter(volunteer__openid=openid).order_by('-create_time')
+    training_payload = []
+    if len(trainings) > 0:
+        for t in trainings:
+            item = {
+                "training_name": t.training.name,
+                "link": "/training/register_list/%s/" % t.training.id
+            }
+            tmp_status = get_training_registers_status([t])[0]
+            item.update(tmp_status)
+            item['status'] = 0
+            start_at_cnt = 0
+            for at in item['activity_list']:
+                if at['status_value'] > 0:
+                    start_at_cnt += 1
+            if start_at_cnt < len(item['activity_list']):
+                item['status'] = 1
+            else:
+                item['status'] = 2
+            training_payload.append(item)
+
+    data = {
+        "volunteer": Volunteer.objects.get(openid=openid),
+        "activity_list": activity_payload,
+        "training_list": training_payload
+    }
+    return data
 
 
 @login_required
@@ -98,7 +151,8 @@ def load_volunteer_list(request):
             "text": str(i+1)
         }, {
             "value": v.name,
-            "text": v.name
+            "text": v.name,
+            "link": "/volunteer/volunteer_profile/%s/" % str(v.openid)
         }, {
             "value": v.group.id if v.group else "-",
             "text": v.group.name if v.group else u"未分组"
@@ -223,6 +277,8 @@ def register(request, qrcode_id):
     code = request.GET["code"]
     openid = get_openid(code)
     # openid = get_random_str()
+    if admin.check_volunteer_exist(openid):
+        return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.VOLUNTEER_EXIST_MSG})
     return render(request, 'register.html', {
         "pageName": u'"故事妈妈"志愿者注册',
         "qrcode_id": qrcode_id,
@@ -296,8 +352,7 @@ def register_volunteer(request):
         return render(request, 'mobile_callback.html', {"type": "success", "content": u"注册成功"})
     except:
         result.code = Consts.FAILED_CODE
-        result.msg = Consts.UNKNOWN_ERROR
-    return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")
+    return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.UNKNOWN_ERROR})
 
 
 @login_required

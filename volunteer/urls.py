@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^update_volunteer_info', views.update_volunteer_info, name='update_volunteer_info'),
     url(r'^download_volunteer_list', views.download_volunteer_list, name='download_volunteer_list'),
     url(r'^remove_volunteer/(?P<openid>[\w\-]+)/', views.remove_volunteer, name='remove_volunteer'),
+    url(r'^volunteer_profile/(?P<openid>[\w\-]+)/', views.volunteer_profile, name='volunteer_profile'),
     url(r'^register/(?P<qrcode_id>[\w\-]+)/', views.register, name="register"),
     url(r'^signup/(?P<activity_id>[\w\-]+)/', views.signup, name="signup"),
     url(r'^register_volunteer', views.register_volunteer, name="register_volunteer"),

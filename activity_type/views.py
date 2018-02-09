@@ -49,6 +49,7 @@ def activity_type(request):
         })
     data = {
         "pageName": u"活动类型列表",
+        "is_superuser": request.user.is_superuser,
         "add": {
             "label": "admin",
             "link": "/activity_type/create_activity_type/",

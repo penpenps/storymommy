@@ -27,6 +27,7 @@ ACTIVITY_NOT_START_MSG = u"活动还未开始"
 ACTIVITY_REG_END_MSG = u"活动已结束"
 PRE_ACTIVITIES_ABSENT_MSG = u"前序活动为参加,不能签到此次活动"
 ACTIVITY_SIGNUP_EXIST_MSG = u"已签到该活动,不得重复签到"
+UPDATE_PASSWORD_UNMATCH_MSG = u"两次输入密码不一致"
 UNKNOWN_ERROR = u"系统错误"
 
 QR_NOT_FOUND_MSG = u"无效二维码"

@@ -16,5 +16,8 @@ urlpatterns = [
     url(r'^upload_batch_admin', views.upload_batch_admin, name='upload_batch_admin'),
     url(r'^download_admin_list', views.download_admin_list, name='download_admin_list'),
     url(r'^no_permission', views.no_permission, name='no_permission'),
+    url(r'^profile', views.profile, name='profile'),
+    url(r'^update_user_profile', views.update_user_profile, name='update_user_profile'),
+    url(r'^update_user_password', views.update_user_password, name='update_user_password'),
     url(r'^proc_qrcode/(?P<qrcode_id>[\w\-]+)/', views.proc_qrcode, name="backend.views.proc_qrcode")
 ]
