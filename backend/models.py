@@ -12,7 +12,7 @@ class Qrcode(models.Model):
     REGISTER = 0
     SIGN_UP = 1
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    creator = models.ForeignKey(User, on_delete=models.SET(None))
+    creator = models.ForeignKey(User, on_delete=models.SET(None), null=True)
     create_time = models.DateTimeField(default=timezone.now)
     expire_time = models.DateTimeField()
     type = models.IntegerField(default=REGISTER)

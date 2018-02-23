@@ -344,7 +344,7 @@ def register_volunteer(request):
 
     user = qr.creator
     group_id = None
-    if not user.is_superuser and len(get_all_groups(user.username)) > 0:
+    if user and not user.is_superuser and len(get_all_groups(user.username)) > 0:
         group_id = get_all_groups(user.username).first().id
 
     try:
