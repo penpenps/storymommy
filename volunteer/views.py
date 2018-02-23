@@ -52,6 +52,7 @@ def get_volunteer_profile(openid):
             "time": format_datetime_str(at.activity.start_time) + " - " + format_datetime_str(at.activity.end_time),
             "address": at.activity.address,
             "status_value": at.status,
+            "score": get_volunteer_score(openid),
             "status": at.get_status_display()
         })
 
