@@ -371,7 +371,7 @@ def get_qrcode(request):
         if request.GET['type'] == 'register':
             qr = Qrcode.objects.filter(creator__username=username, type=_type, expire_time__gt=datetime.datetime.now()).first()
             if not qr:
-                expire_time = datetime.datetime.now() + datetime.timedelta(days=7)
+                expire_time = datetime.datetime.now() + datetime.timedelta(days=30)
                 qr = Qrcode.objects.create(creator=request.user, type=Qrcode.REGISTER, expire_time=expire_time)
         else:
             if not check_activity_exist(activity_id):
