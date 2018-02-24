@@ -94,7 +94,7 @@ def update_volunteer_info(request):
     phone = request.POST['phone']
     email = request.POST['email']
     cert_number = request.POST['cert_number']
-    year = request.POST['year']
+    year = float(request.POST['year'])
     if not admin.check_volunteer_exist(openid):
         result.code = Consts.FAILED_CODE
         result.msg = Consts.NOT_FOUND_VOLUNTEER_MSG
