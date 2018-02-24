@@ -14,7 +14,7 @@ class Volunteer(models.Model):
     phone = models.CharField(max_length=16)
     email = models.EmailField(max_length=50, default="")
     cert_number = models.CharField(max_length=50, default='')
-    year = models.FloatField(default=0, max_digits=4, decimal_places=1)
+    year = models.DecimalField(default=0, max_digits=4, decimal_places=1)
     group = models.ForeignKey(Group, on_delete=models.SET(None), null=True)
     creator = models.ForeignKey(User, on_delete=models.SET(get_superadmin))
     create_time = models.DateTimeField(default=timezone.now)
