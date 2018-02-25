@@ -103,47 +103,52 @@ function add_form_event(callback){
     });
 }
 
+function edit_remove_events(){
+    $('.table-edit-btn').click(function(e){
+        e.preventDefault();
+        var row_item = {};
+        $(this).closest('tr').find('td').each(function(){
+            var attr = $(this).attr('name');
+            if(typeof attr !== typeof undefined && attr !== false){
+                row_item[attr] = $(this).attr('value');
+            }
+        });
+        var form = $($(this).attr("data-target")).find('form');
+        form.find('input,select').each(function(){
+            if($(this).attr('name') in row_item){
+                $(this).val(row_item[$(this).attr('name')]);
+            }
+        });
+    });
+
+    $('.table-remove-btn').click(function(e){
+        e.preventDefault();
+        var row_item = {};
+        var param = $(this).attr('param');
+        $(this).closest('tr').find('td').each(function(){
+            var attr = $(this).attr('name');
+            if(typeof attr !== typeof undefined && attr !== false){
+                row_item[attr] = $(this).attr('value');
+            }
+        });
+        var label = $('#remove-modal-content').attr('label');
+        $('#remove-modal-content').text(row_item[label]);
+
+        $('#remove-confirm-btn').attr('key', row_item[param]);
+
+    });
+}
+
 function load_table_content(load_url, table_panel_id, table_id){
     $.get(load_url, {}, function(tableHtml){
         $(table_panel_id).html(tableHtml);
         var table = $(table_id).DataTable();
 
         $(".form_datetime").datetimepicker({format: 'yyyy/mm/dd hh:ii'});
-
-        table.on( 'init draw', function () {
-            $('.table-edit-btn').click(function(e){
-                e.preventDefault();
-                var row_item = {};
-                $(this).closest('tr').find('td').each(function(){
-                    var attr = $(this).attr('name');
-                    if(typeof attr !== typeof undefined && attr !== false){
-                        row_item[attr] = $(this).attr('value');
-                    }
-                });
-                var form = $($(this).attr("data-target")).find('form');
-                form.find('input,select').each(function(){
-                    if($(this).attr('name') in row_item){
-                        $(this).val(row_item[$(this).attr('name')]);
-                    }
-                });
-            });
-
-            $('.table-remove-btn').click(function(e){
-                e.preventDefault();
-                var row_item = {};
-                var param = $(this).attr('param');
-                $(this).closest('tr').find('td').each(function(){
-                    var attr = $(this).attr('name');
-                    if(typeof attr !== typeof undefined && attr !== false){
-                        row_item[attr] = $(this).attr('value');
-                    }
-                });
-                var label = $('#remove-modal-content').attr('label');
-                $('#remove-modal-content').text(row_item[label]);
-
-                $('#remove-confirm-btn').attr('key', row_item[param]);
-
-            });
+        edit_remove_events();
+        
+        table.on( 'draw', function () {
+            edit_remove_events();
         });
 
         $('#remove-confirm-btn').click(function(){
