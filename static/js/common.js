@@ -17,7 +17,7 @@
     };
 
     $.fn.checkInput = function (element){
-        if($(element).val().length <= 0){
+        if($(element).val().length <= 0 || $(element).val() == "" || $(element).val() == undefined){
             $(element).closest('.form-group').addClass("has-danger");
             $(element).closest('form').find('button[type="submit"]').prop( "disabled", true );
             $(element).addClass('is-invalid');
