@@ -110,7 +110,7 @@ function load_table_content(load_url, table_panel_id, table_id){
 
         $(".form_datetime").datetimepicker({format: 'yyyy/mm/dd hh:ii'});
 
-        table.on( 'draw', function () {
+        table.on( 'init draw', function () {
             $('.table-edit-btn').click(function(e){
                 e.preventDefault();
                 var row_item = {};
