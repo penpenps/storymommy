@@ -94,7 +94,13 @@ def update_volunteer_info(request):
     phone = request.POST['phone']
     email = request.POST['email']
     cert_number = request.POST['cert_number']
-    year = float(request.POST['year'])
+    year = request.POST['year']
+    try:
+        year = float(year)
+    except:
+        result.code = Consts.FAILED_CODE
+        result.msg = Consts.INVALID_VOLUNTEER_YEAR_MSG
+        return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")
     if not admin.check_volunteer_exist(openid):
         result.code = Consts.FAILED_CODE
         result.msg = Consts.NOT_FOUND_VOLUNTEER_MSG
@@ -330,6 +336,12 @@ def register_volunteer(request):
     phone = request.POST['phone']
     cert_number = request.POST['cert-number']
     year = request.POST['year']
+    try:
+        year = float(year)
+    except:
+        result.code = Consts.FAILED_CODE
+        result.msg = Consts.INVALID_VOLUNTEER_YEAR_MSG
+        return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")
 
     result = Result()
     if admin.check_volunteer_exist(openid):
