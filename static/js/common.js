@@ -110,8 +110,9 @@ function load_table_content(load_url, table_panel_id, table_id){
 
         $(".form_datetime").datetimepicker({format: 'yyyy/mm/dd hh:ii'});
 
-        table.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
-            $(this).find('.table-edit-btn').click(function(){
+        table.on( 'draw', function () {
+            $('.table-edit-btn').click(function(e){
+                e.preventDefault();
                 var row_item = {};
                 $(this).closest('tr').find('td').each(function(){
                     var attr = $(this).attr('name');
@@ -127,7 +128,8 @@ function load_table_content(load_url, table_panel_id, table_id){
                 });
             });
 
-            $(this).find('.table-remove-btn').click(function(){
+            $('.table-remove-btn').click(function(e){
+                e.preventDefault();
                 var row_item = {};
                 var param = $(this).attr('param');
                 $(this).closest('tr').find('td').each(function(){
