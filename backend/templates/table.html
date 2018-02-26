@@ -43,7 +43,7 @@
                             <td>
                                 {% if table.view %}
                                 {% with row|get_at_index:table.view.index as item %}
-                                <a class="mr-3 d-inline-block table-edit-btn" target="_blank" href="{{table.view.link}}{{ item.value }}">
+                                <a class="mr-3 d-inline-block" target="_blank" href="{{table.view.link}}{{ item.value }}">
                                     <i class="fa fa-fw fa-eye"></i></a>
                                 {% endwith %}
                                 {% endif %}

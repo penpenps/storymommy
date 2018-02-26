@@ -152,7 +152,8 @@ def load_activity_list(request):
             "text": str(i+1)
         }, {
             "value": at.name,
-            "text": at.name
+            "text": at.name,
+            "link": "/activity/register_list/%s/" % at.id
         }, {
             "value": at.type.id,
             "text": at.type.name
