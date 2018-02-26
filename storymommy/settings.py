@@ -31,7 +31,7 @@ if 'prod' in BASE_DIR:
     ALLOWED_HOSTS = ["www.storymommy.club"]
 else:
     DEBUG = True
-    ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1"]
+    ALLOWED_HOSTS = ["www.storymommy.club", "0.0.0.0", "127.0.0.1"]
 
 
 # Application definition
