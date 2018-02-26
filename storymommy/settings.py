@@ -23,9 +23,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '$^fvz3=$t#sxwl_sxs$0zqu)aiyu$^h%k97+1okq=ob8f=y#k$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
-ALLOWED_HOSTS = ["www.storymommy.club"]
+if 'prod' in BASE_DIR:
+    DEBUG = False
+    ALLOWED_HOSTS = ["www.storymommy.club"]
+else:
+    DEBUG = True
+    ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1"]
 
 
 # Application definition
