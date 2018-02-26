@@ -6,6 +6,7 @@ import logging
 import os
 from storymommy.settings import LOG_DIR
 import time
+import datetime
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -27,7 +28,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         registers = ActivityRegister.objects.all()
         for r in registers:
-            if r.activity.get_status() == Activity.END and r.status == ActivityRegister.REGISTERED:
+            if r.activity.end_time + datetime.timedelta(hours=1) < datetime.datetime.now() and r.status == ActivityRegister.REGISTERED:
                 r.status = ActivityRegister.ABSENT
                 r.save()
                 log_msg = u'Update volunteer "%s" in activity "%s" status as "%s"' % (r.volunteer.name, r.activity.name, r.get_status_display())
