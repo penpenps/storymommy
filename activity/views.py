@@ -285,8 +285,8 @@ def load_activity_register_list(request, activity_id):
 
     data = {
         "table": {
-            "id": "activityTable",
-            "name": u"活动列表",
+            "id": "activityRegisterTable",
+            "name": u"活动注册列表",
             "label": "activity",
             "header": ["ID", u"志愿者", u"状态", u"创建者", u"注册时间", u"关联培训"],
             "labels": ["id", "name", "status", "creator", "create_time", "training"],
