@@ -272,7 +272,7 @@ def get_volunteer_list(request):
     res = defaultdict(list)
     for group_id in group_list:
         volun_list = admin.get_volunteers_by_group(group_id if group_id != '-' else None)
-        print volun_list
+
         for v in volun_list:
             if admin.check_has_modify_permission(username, v.openid):
                 res[group_id].append({
@@ -317,7 +317,6 @@ def signup(request, activity_id):
         ta = reg.training_activity_mapping
         pre_tas = TrainingActivity.objects.filter(training__id=ta.training.id, order__lt=ta.order)
         for p in pre_tas:
-            print p.training.name, p.activity_type.name, ta.order, p.order
             pre_reg = ActivityRegister.objects.filter(training_activity_mapping__id=p.id, volunteer__openid=openid).first()
             if not pre_reg or pre_reg.status != ActivityRegister.SIGNED_UP:
                 return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.PRE_ACTIVITIES_ABSENT_MSG})
@@ -339,6 +338,7 @@ def register_volunteer(request):
     phone = request.POST['phone']
     cert_number = request.POST['cert-number']
     year = request.POST['year']
+    result = Result()
     try:
         year = float(year)
     except:
@@ -346,7 +346,7 @@ def register_volunteer(request):
         result.msg = Consts.INVALID_VOLUNTEER_YEAR_MSG
         return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")
 
-    result = Result()
+
     if admin.check_volunteer_exist(openid):
         result.code = Consts.FAILED_CODE
         result.msg = Consts.VOLUNTEER_EXIST_MSG

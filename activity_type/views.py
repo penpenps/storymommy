@@ -12,6 +12,7 @@ import admin
 import json
 import csv
 import datetime
+import codecs
 
 
 @login_required
@@ -228,6 +229,7 @@ def load_activity_type_list(request):
 def download_activity_type_list(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="activity_type_list_%s.csv"' % datetime.date.today().strftime("%Y_%m_%d")
+    response.write(codecs.BOM_UTF8)
     writer = csv.writer(response)
     header = [u"类型名称", u"积分", u"所属小组", u"创建者", u"创建人", u"创建时间"]
     if request.user.is_superuser:

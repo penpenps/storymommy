@@ -13,6 +13,7 @@ from models import Group
 import json
 import csv
 import datetime
+import codecs
 
 
 @login_required
@@ -174,6 +175,7 @@ def load_group_list(request):
 def download_group_list(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="group_list_%s.csv"' % datetime.date.today().strftime("%Y_%m_%d")
+    response.write(codecs.BOM_UTF8)
     writer = csv.writer(response)
     header = [u"小组名称", u"组长", u"人数", u"创建时间"]
     writer.writerow([unicode(s).encode("utf-8") for s in header])

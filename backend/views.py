@@ -190,6 +190,7 @@ def download_admin_template(request):
 def download_admin_list(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="admin_list_%s.csv"' % datetime.date.today().strftime("%Y_%m_%d")
+    response.write(codecs.BOM_UTF8)
     writer = csv.writer(response)
     header = [u"用户名", u"姓名", 'email', u"电话", u"创建时间", u"最后登入"]
     writer.writerow([unicode(s).encode("utf-8") for s in header])

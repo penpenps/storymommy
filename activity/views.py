@@ -16,6 +16,7 @@ import admin
 import json
 import csv
 import datetime
+import codecs
 
 
 @login_required
@@ -326,6 +327,7 @@ def download_activity_register_list(request, activity_id):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="register_%s.csv"' % datetime.date.today().strftime("%Y_%m_%d")
     # print 'attachment; filename="%s_%s.csv"' % (at.name, datetime.date.today().strftime("%Y_%m_%d"))
+    response.write(codecs.BOM_UTF8)
     writer = csv.writer(response)
     header = [u"志愿者", u"状态", u"创建者", u"注册时间", u"更新时间"]
 

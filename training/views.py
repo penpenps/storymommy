@@ -16,6 +16,7 @@ import admin
 import json
 import csv
 import datetime
+import codecs
 
 
 @login_required
@@ -194,6 +195,7 @@ def load_training_list(request):
 def download_training_list(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="training_list_%s.csv"' % datetime.date.today().strftime("%Y_%m_%d")
+    response.write(codecs.BOM_UTF8)
     writer = csv.writer(response)
     header = [u"培训名称", u"小组", u"创建人", u"创建时间", u"权限", u"活动设置"]
     writer.writerow([unicode(s).encode("utf-8") for s in header])
