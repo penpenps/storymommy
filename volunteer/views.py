@@ -20,6 +20,7 @@ import admin
 import json
 import csv
 import datetime
+import codecs
 from collections import defaultdict
 
 
@@ -248,16 +249,18 @@ def load_volunteer_list(request):
 def download_volunteer_list(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="volunteer_list_%s.csv"' % datetime.date.today().strftime("%Y_%m_%d")
+    response.write(codecs.BOM_UTF8)
     writer = csv.writer(response)
+
     header = [u"姓名", u"小组", u"电话", u"Email", u"工作证号", u"工作年限", u"创建人", u"创建时间"]
-    writer.writerow([unicode(s).encode("utf-8") for s in header])
+    writer.writerow([s for s in header])
     if request.user.is_superuser:
         volun_list = Volunteer.objects.all()
     else:
         volun_list = Volunteer.objects.filter(group__admin__username=request.user.username)
     for v in volun_list:
         items = [v.name, v.group.name if v.group else u"未分组", v.phone, v.email, v.cert_number, v.year, v.creator.first_name, format_datetime_str(v.create_time)]
-        writer.writerow([unicode(s).encode("utf-8") for s in items])
+        writer.writerow([s for s in items])
 
     return response
 
