@@ -22,7 +22,7 @@ def get_openid(code):
     url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" % (APPID, SECRET, code)
     response = requests.get(url)
     ret = json.loads(response.text)
-    print ret
+    # print ret
     return ret['openid'] if 'openid' in ret else None
 
 

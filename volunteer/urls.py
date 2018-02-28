@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^signup/(?P<activity_id>[\w\-]+)/', views.signup, name="signup"),
     url(r'^register_volunteer', views.register_volunteer, name="register_volunteer"),
     url(r'^get_qrcode', views.get_qrcode, name='get_qrcode'),
+    url(r'^client', views.mobile_volunteer_profile, name='mobile_volunteer_profile'),
     url(r'^error', views.mobile_error, name="error")
 
 ]

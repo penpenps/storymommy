@@ -43,6 +43,21 @@ def volunteer_profile(request, openid):
     return render(request, 'volunteer_profile.html', get_volunteer_profile(openid))
 
 
+@wechat_auth_required
+def mobile_volunteer_profile(request):
+    code = request.GET["code"]
+    openid = get_openid(code)
+    if not admin.check_volunteer_exist(openid):
+        return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.VOLUNTEER_EXIST_MSG})
+    profile = get_volunteer_profile(openid)
+    data = {
+        "pageName": profile["volunteer"].name
+    }
+    data.update(profile)
+    print data
+    return render(request, 'mobile_volunteer_profile.html', data)
+
+
 def get_volunteer_profile(openid):
     activities = ActivityRegister.objects.filter(volunteer__openid=openid).order_by('-create_time')
     activity_payload = []

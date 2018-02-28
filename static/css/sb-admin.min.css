@@ -45,3 +45,14 @@
     text-align:center;
     margin:1em auto;
  }
+
+ .card-body-sm-icon {
+     position: absolute;
+     z-index: 0;
+     top: 10px;
+     right: 10px;
+     font-size: 14px;
+     -webkit-transform: rotate(15deg);
+     -ms-transform: rotate(15deg);
+     transform: rotate(15deg);
+ }

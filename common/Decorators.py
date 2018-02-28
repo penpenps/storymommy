@@ -12,7 +12,7 @@ def wechat_auth_required(function):
             redirect_uri = request.build_absolute_uri(reverse(view_name, args=args))
             if request.is_secure() and not redirect_uri.startswith('https://'):
                 redirect_uri = redirect_uri.replace("http", "https")
-            print "is_secure: %s, redirect_uri: %s" % (request.is_secure(), redirect_uri)
+            # print "is_secure: %s, redirect_uri: %s" % (request.is_secure(), redirect_uri)
 
             return redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s" \
                             % (Consts.APPID, urllib.quote(redirect_uri, safe=""), "snsapi_base", "123#wechat_sign"))

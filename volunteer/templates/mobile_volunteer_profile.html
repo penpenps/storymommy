@@ -1,0 +1,52 @@
+{% extends "mobile_base.html" %}
+{% block page %}
+<div class="mb-3" style="width:100%; font-size:14px; ">
+    <div class="row">
+        <div class="col-6">所属小组:&nbsp;<span class="profile-item" name="phone">
+            {% if volunteer.group %}
+                {{volunteer.group.name}}
+            {% else %}
+                未分组
+            {% endif %}
+        </span></div>
+        <div class="col-6">电话:&nbsp;<span class="profile-item" name="phone">{{volunteer.phone}}</span></div>
+    </div>
+    <div class="row">
+        <div class="col-6">工作年限:&nbsp;<span class="profile-item" name="phone">{{volunteer.year}}</span></div>
+        <div class="col-6">当前积分:&nbsp;<span class="profile-item" name="score">{{score}}</span></div>
+    </div>
+    <p style="margin-bottom:0px;">Email:&nbsp;<span class="profile-item" name="email">{{volunteer.email}}</span></p>
+
+    <p style="margin-bottom:0px;">工作证号:&nbsp;<span class="profile-item" name="phone">{{volunteer.cert_number}}</span></p>
+
+</div>
+<div>
+    <div class="list-group">
+    {% for at in activity_list %}
+        {% if at.status_value == 0 %}
+        <div class="list-group-item text-white bg-primary o-hidden h-100">
+                <div class="card-body-sm-icon">
+                    <i class="fa fa-fw fa-calendar"></i>&nbsp;已注册
+                </div>
+        {% elif at.status_value == 1%}
+        <div class="list-group-item text-white bg-success o-hidden h-100">
+                <div class="card-body-sm-icon">
+                    <i class="fa fa-fw fa-check-circle-o"></i>&nbsp;已签到
+                </div>
+        {% elif at.status_value == 2 %}
+        <div class="list-group-item text-white bg-danger o-hidden h-100">
+                <div class="card-body-sm-icon">
+                    <i class="fa fa-fw fa-times"></i>&nbsp;缺席
+                </div>
+        {% endif %}
+
+                <div class="mr-5">{{at.name}}</div>
+                <div class="mr-5"><small>{{at.time}}</small></div>
+                <div ><small>{{at.address}}</small></div>
+
+        </div>
+    {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
