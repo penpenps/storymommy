@@ -48,7 +48,7 @@ def mobile_volunteer_profile(request):
     code = request.GET["code"]
     openid = get_openid(code)
     if not admin.check_volunteer_exist(openid):
-        return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.VOLUNTEER_EXIST_MSG})
+        return render(request, 'mobile_callback.html', {"type": "danger", "content": Consts.NOT_FOUND_VOLUNTEER_MSG})
     profile = get_volunteer_profile(openid)
     data = {
         "pageName": profile["volunteer"].name
