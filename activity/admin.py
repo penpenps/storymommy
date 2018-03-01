@@ -146,5 +146,5 @@ def get_activity_register_count(activity_id):
 
 
 def get_volunteer_score(openid):
-    res = ActivityRegister.objects.filter(volunteer__openid=openid, status=ActivityRegister.SIGNED_UP).annotate(total_score=Sum('activity__type__score'))
-    return res[0].total_score if len(res) > 0 else 0
+    res = ActivityRegister.objects.filter(volunteer__openid=openid, status=ActivityRegister.SIGNED_UP).aggregate(total_score=Sum('activity__type__score'))
+    return res["total_score"] if len(res) > 0 else 0
