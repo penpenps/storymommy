@@ -2,6 +2,7 @@ $(document).ready(function(){
 //    $("#dataTable").DataTable();
     load_group_select();
     $('#volunteer-select').multiselect({
+            maxHeight: 600,
             enableFiltering: true,
             includeSelectAllOption: true,
             selectAllText: '全选',
