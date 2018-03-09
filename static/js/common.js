@@ -198,6 +198,7 @@ function load_group_select(){
             $('#group-select').append("<option value=\""+ item["value"] + "\">" + item["text"] + "</option>");
         });
         $('#group-select').multiselect({
+            maxHeight: 600,
             enableFiltering: true,
             includeSelectAllOption: true,
             selectAllText: '全选',
