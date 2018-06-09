@@ -36,6 +36,7 @@
                 <div id="activity-panel">
                     <div class="list-group">
                         {% for at in activity_list %}
+                        {% if at.status_value < 2 %}
                         <a href="{{at.link}}" class="list-group-item list-group-item-action flex-column align-items-start">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">{{at.name}}</h5>
@@ -52,6 +53,7 @@
                             <p class="mb-1">{{at.time}}</p>
                             <small>{{at.address}}</small>
                         </a>
+                        {% endif %}
                         {% endfor %}
                     </div>
                 </div>
