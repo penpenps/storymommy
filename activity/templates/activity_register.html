@@ -23,8 +23,8 @@
         <div class="card-header">
             <i class="fa fa-info-circle"></i> 活动信息</div>
         <div class="card-body">
-            <p>时间: {{activity.get_start_time}} - {{activity.get_end_time}}</p>
-            <p>地点: {{activity.address}}</p>
+            <p id="activity_time">时间: {{activity.get_start_time}} - {{activity.get_end_time}}</p>
+            <p id="activity_addr">地点: {{activity.address}}</p>
             <p>状态: {{activity.get_status}}</p>
             <p>{{activity.creator.first_name}} {{activity.get_create_time}} 创建</p>
         </div>

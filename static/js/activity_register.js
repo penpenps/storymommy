@@ -70,11 +70,17 @@ $(document).ready(function(){
             $('#qrcode-error').hide();
 
             if(res.code == 1){
-                $('#qrcode-img').show();
+                $('#qrcode-img').hide();
+                $('#qr-act-time').hide();
+                $('#qr-act-addr').hide();
                 $('#qrcode-error').html(res.msg);
                 return;
             }
             $('#qrcode-img').html(res.documentElement);
+            $('#qr-act-time').text($('#activity_time').text());
+            $('#qr-act-time').show();
+            $('#qr-act-addr').text($('#activity_addr').text());
+            $('#qr-act-addr').show();
 
         });
     });
