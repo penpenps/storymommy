@@ -329,12 +329,12 @@ def download_activity_register_list(request, activity_id):
     # print 'attachment; filename="%s_%s.csv"' % (at.name, datetime.date.today().strftime("%Y_%m_%d"))
     response.write(codecs.BOM_UTF8)
     writer = csv.writer(response)
-    header = [u"志愿者", u"状态", u"创建者", u"注册时间", u"更新时间"]
+    header = [u"志愿者", u"状态", u"创建者", u"小组", u"注册时间", u"更新时间"]
 
     writer.writerow([unicode(s).encode("utf-8") for s in header])
     register_list = admin.get_all_register(request.user, activity_id)
     for r in register_list:
-        items = [r.volunteer.name, r.get_status_display(), r.creator.first_name, format_datetime_str(r.create_time), format_datetime_str(r.update_time)]
+        items = [r.volunteer.name, r.get_status_display(), r.creator.first_name, r.volunteer.group.name, format_datetime_str(r.create_time), format_datetime_str(r.update_time)]
         writer.writerow([unicode(s).encode("utf-8") for s in items])
 
     return response
