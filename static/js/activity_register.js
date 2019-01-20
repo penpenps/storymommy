@@ -71,12 +71,15 @@ $(document).ready(function(){
 
             if(res.code == 1){
                 $('#qrcode-img').hide();
+                $('#qr-act-name').hide();
                 $('#qr-act-time').hide();
                 $('#qr-act-addr').hide();
                 $('#qrcode-error').html(res.msg);
                 return;
             }
             $('#qrcode-img').html(res.documentElement);
+            $('#qr-act-name').text($('#activity_name').text());
+            $('#qr-act-name').show();
             $('#qr-act-time').text($('#activity_time').text());
             $('#qr-act-time').show();
             $('#qr-act-addr').text($('#activity_addr').text());
