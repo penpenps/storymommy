@@ -333,9 +333,9 @@ def download_activity_register_list(request, activity_id):
 
     writer.writerow([unicode(s).encode("utf-8") for s in header])
     register_list = admin.get_all_register(request.user, activity_id)
-    group_name = r.volunteer.group.name if r.volunteer.group.name else ''
+    
     for r in register_list:
-        items = [r.volunteer.name, r.get_status_display(), r.creator.first_name, group_name, format_datetime_str(r.create_time), format_datetime_str(r.update_time)]
+        items = [r.volunteer.name, r.get_status_display(), r.creator.first_name, r.volunteer.group.name if r.volunteer.group.name else '', format_datetime_str(r.create_time), format_datetime_str(r.update_time)]
         writer.writerow([unicode(s).encode("utf-8") for s in items])
 
     return response
