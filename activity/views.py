@@ -335,8 +335,8 @@ def download_activity_register_list(request, activity_id):
     register_list = admin.get_all_register(request.user, activity_id)
     
     for r in register_list:
-        items = [r.volunteer.name, r.get_status_display(), r.creator.first_name, r.volunteer.group.name, format_datetime_str(r.create_time), format_datetime_str(r.update_time)]
-        writer.writerow([unicode(s).encode("utf-8") if s else '' for s in items])
+        items = [r.volunteer.name, r.get_status_display(), r.creator.first_name, r.volunteer.group.name if r.volunteer.group and r.volunteer.group.name else '-', format_datetime_str(r.create_time), format_datetime_str(r.update_time)]
+        writer.writerow([unicode(s).encode("utf-8") for s in items])
 
     return response
 
