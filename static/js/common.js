@@ -145,6 +145,7 @@ function load_table_content(load_url, table_panel_id, table_id){
         var table = $(table_id).DataTable();
 
         $(".form_datetime").datetimepicker({format: 'yyyy/mm/dd hh:ii'});
+        $(".form_datetime").datetimepicker("update", new Date());
         edit_remove_events();
         
         table.on( 'draw', function () {
