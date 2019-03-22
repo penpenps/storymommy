@@ -25,7 +25,7 @@
                             {% endfor %}
                         </select>
                         {% elif item.type == 'datetime' %}
-                        <input size="16" type="text" value="2018/01/01 09:00" id="{{item.label}}" name="{{item.label}}" readonly class="form-control form_datetime">
+                        <input size="16" type="text" value="{% now "Y/m/d H:i" %}" id="{{item.label}}" name="{{item.label}}" readonly class="form-control form_datetime">
                         {% else %}
                         <input class="form-control" id="{{item.label}}" type="{{item.type}}" name="{{item.label}}" placeholder="">
                         {% endif %}
