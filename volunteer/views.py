@@ -410,7 +410,7 @@ def get_qrcode(request):
                 return HttpResponse(json.dumps(result.to_dict()), content_type="application/json")
             qr = Qrcode.objects.filter(creator__username=username, type=_type, activity__id=activity_id, expire_time__gt=datetime.datetime.now()).first()
             if not qr:
-                expire_time = datetime.datetime.now() + datetime.timedelta(days=7)
+                expire_time = datetime.datetime.now() + datetime.timedelta(days=15)
                 activity = Activity.objects.get(id=activity_id)
                 qr = Qrcode.objects.create(creator=request.user, type=Qrcode.SIGN_UP, expire_time=expire_time, activity=activity)
         url = request.build_absolute_uri(get_absolute_url(qr.id))
